@@ -16,7 +16,7 @@ public class Main extends Application {
         
 		Parent root = FXMLLoader.load(getClass().getResource("Home.fxml"));
         primaryStage.setTitle("RPGames v0.01 PRE-ALPHA");
-        primaryStage.setScene(new Scene(root, 960, 540));
+        primaryStage.setScene(new Scene(root, 1024, 600));
         primaryStage.show();
 	}
 	

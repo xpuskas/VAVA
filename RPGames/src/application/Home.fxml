@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.web.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.*?>
@@ -11,8 +12,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -62,48 +62,67 @@
                         </VBox>
                      </right>
                      <center>
-                        <GridPane BorderPane.alignment="CENTER">
-                          <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="300.0" minWidth="10.0" prefWidth="187.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="413.0" minWidth="10.0" prefWidth="413.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints maxHeight="348.0" minHeight="10.0" prefHeight="346.0" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="226.0" minHeight="10.0" prefHeight="140.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
+                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="30.0" BorderPane.alignment="CENTER">
                            <children>
-                              <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                 <children>
-                                    <ImageView fx:id="image4" fitHeight="120.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" />
-                                    <ImageView fx:id="image5" fitHeight="120.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" />
-                                 </children>
-                              </HBox>
-                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="18.0">
+                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="160.0">
                                  <children>
                                     <ImageView fx:id="image1" fitHeight="120.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" />
+                                    <Label text="Label" />
                                     <ImageView fx:id="image2" fitHeight="120.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" />
+                                    <Label text="Label" />
                                  </children>
-                                 <padding>
-                                    <Insets top="45.0" />
-                                 </padding>
+                                 <HBox.margin>
+                                    <Insets top="10.0" />
+                                 </HBox.margin>
                               </VBox>
-                              <ImageView fx:id="image3" fitHeight="120.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
-                                 <GridPane.margin>
-                                    <Insets right="10.0" />
-                                 </GridPane.margin>
-                              </ImageView>
-                              <ImageView fx:id="imageBig" fitHeight="259.0" fitWidth="345.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" />
+                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="280.0">
+                                 <children>
+                                    <ImageView fx:id="imageBig" fitHeight="210.0" fitWidth="280.0" pickOnBounds="true" preserveRatio="true" />
+                                    <Label text="Label" />
+                                    <TextArea prefHeight="89.0" prefWidth="280.0" />
+                                 </children>
+                                 <HBox.margin>
+                                    <Insets top="35.0" />
+                                 </HBox.margin>
+                              </VBox>
+                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="160.0">
+                                 <children>
+                                    <ImageView fx:id="image3" fitHeight="120.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" />
+                                    <Label text="Label" />
+                                    <ImageView fx:id="image4" fitHeight="120.0" fitWidth="160.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
+                                    <Label text="Label" />
+                                 </children>
+                                 <HBox.margin>
+                                    <Insets top="10.0" />
+                                 </HBox.margin>
+                              </VBox>
                            </children>
-                        </GridPane>
+                        </HBox>
                      </center>
                   </BorderPane>
                </content>
           </Tab>
           <Tab text="Game profile">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-            </content>
+               <content>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0">
+                     <right>
+                        <VBox prefHeight="536.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                           <BorderPane.margin>
+                              <Insets right="10.0" top="10.0" />
+                           </BorderPane.margin>
+                           <children>
+                              <ListView prefHeight="536.0" prefWidth="142.0" />
+                           </children>
+                        </VBox>
+                     </right>
+                  </BorderPane>
+               </content>
           </Tab>
+            <Tab text="My games">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+               </content>
+            </Tab>
             <Tab text="My games">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />

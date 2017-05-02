@@ -28,14 +28,13 @@ public class Controller implements Initializable {
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		Image solco = new Image("file:solco.jpg");
-		Image foto = new Image("file:foto.jpg");
+		Image solco = new Image("file:foto1.jpg");
+		Image foto = new Image("file:foto1.jpg");
 		
 		image1.setImage(foto);
 		image2.setImage(foto);
 		image3.setImage(foto);
 		image4.setImage(foto);
-		image5.setImage(foto);
 		
 		imageBig.setImage(solco);
 
