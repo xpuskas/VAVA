@@ -40,7 +40,7 @@
                            <children>
                               <TextField promptText="TYPE..." BorderPane.alignment="CENTER" />
                               <ComboBox prefWidth="150.0" promptText="Genre" />
-                              <ComboBox prefWidth="150.0" promptText="Studio" />
+                              <TextField promptText="Studio" />
                               <ComboBox prefWidth="150.0" promptText="Year of release" />
                               <CheckBox mnemonicParsing="false" text="high ranked">
                                  <VBox.margin>
@@ -111,19 +111,220 @@
                               <Insets right="10.0" top="10.0" />
                            </BorderPane.margin>
                            <children>
+                              <Label text="Recent games">
+                                 <font>
+                                    <Font name="Comic Sans MS" size="24.0" />
+                                 </font>
+                              </Label>
                               <ListView prefHeight="536.0" prefWidth="142.0" />
                            </children>
                         </VBox>
                      </right>
+                     <center>
+                        <ScrollPane prefViewportHeight="546.0" prefViewportWidth="614.0">
+                           <content>
+                              <BorderPane prefHeight="648.0" prefWidth="601.0" BorderPane.alignment="CENTER">
+                                 <center>
+                                    <ImageView fitHeight="270.0" fitWidth="480.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                    </ImageView>
+                                 </center>
+                                 <top>
+                                    <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                                 </top>
+                                 <bottom>
+                                    <VBox>
+                                       <children>
+                                          <HBox>
+                                             <children>
+                                                <Label text="Title" BorderPane.alignment="CENTER">
+                                                   <font>
+                                                      <Font size="36.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                                          <Label layoutX="10.0" layoutY="10.0" text="Genre">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="10.0" layoutY="27.0" text="Studio">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="10.0" layoutY="44.0" text="Release date">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="10.0" layoutY="61.0" prefHeight="70.0" prefWidth="499.0" text="Average Rank">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="10.0" layoutY="78.0" prefHeight="70.0" prefWidth="499.0" text="Description">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <HBox prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <Button mnemonicParsing="false" text="Add review" />
+                                                <Button mnemonicParsing="false" text="Add article" />
+                                                <Button mnemonicParsing="false" text="Add screenshots" />
+                                                <Slider max="5.0" />
+                                                <Button mnemonicParsing="false" text="Rank" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </bottom>
+                              </BorderPane>
+                           </content>
+                        </ScrollPane>
+                     </center>
                   </BorderPane>
                </content>
           </Tab>
             <Tab text="My games">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0">
+                    <items>
+                        <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                          <items>
+                              <VBox>
+                                 <children>
+                                    <Label text="Games I added">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Label>
+                                    <TableView prefHeight="200.0" prefWidth="200.0">
+                                      <columns>
+                                        <TableColumn prefWidth="75.0" text="C1" />
+                                        <TableColumn prefWidth="75.0" text="C2" />
+                                      </columns>
+                                    </TableView>
+                                 </children>
+                              </VBox>
+                              <VBox>
+                                 <children>
+                                    <Label text="My projects">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Label>
+                                    <ListView prefHeight="200.0" prefWidth="200.0" />
+                                 </children>
+                              </VBox>
+                          </items>
+                        </SplitPane>
+                        <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+                          <tabs>
+                            <Tab text="Add new game">
+                                 <content>
+                                    <VBox prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <HBox>
+                                             <children>
+                                                <Label text="Title" />
+                                                <TextField prefHeight="25.0" prefWidth="226.0" promptText="Type title of your game here" />
+                                             </children>
+                                          </HBox>
+                                          <HBox layoutX="10.0" layoutY="10.0">
+                                             <children>
+                                                <Label text="Genre" />
+                                                <ComboBox prefWidth="150.0" />
+                                             </children>
+                                          </HBox>
+                                          <HBox layoutX="10.0" layoutY="10.0">
+                                             <children>
+                                                <Label text="Studio" />
+                                                <TextField prefHeight="25.0" prefWidth="226.0" promptText="Type title of your game here" />
+                                             </children>
+                                          </HBox>
+                                          <HBox layoutX="10.0" layoutY="35.0">
+                                             <children>
+                                                <Label text="Release year" />
+                                                <ComboBox prefWidth="150.0" />
+                                             </children>
+                                          </HBox>
+                                          <Label text="Description" />
+                                          <TextArea prefHeight="200.0" prefWidth="200.0" />
+                                          <HBox layoutX="10.0" layoutY="85.0">
+                                             <children>
+                                                <Label text="Upload cover image" />
+                                                <Button mnemonicParsing="false" text="Choose file..." />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER">
+                                             <children>
+                                                <Button mnemonicParsing="false" text="Submit">
+                                                   <font>
+                                                      <Font size="36.0" />
+                                                   </font>
+                                                </Button>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </content>
+                            </Tab>
+                            <Tab text="Add new project">
+                                 <content>
+                                    <VBox prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <HBox>
+                                             <children>
+                                                <Label text="Title" />
+                                                <TextField prefHeight="25.0" prefWidth="226.0" promptText="Type title of your game here" />
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label text="Genre" />
+                                                <ComboBox prefWidth="150.0" />
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label text="Release year" />
+                                                <ComboBox prefWidth="150.0" />
+                                             </children>
+                                          </HBox>
+                                          <Label text="Description" />
+                                          <TextArea prefHeight="200.0" prefWidth="200.0" />
+                                          <HBox>
+                                             <children>
+                                                <Label text="Upload cover image" />
+                                                <Button mnemonicParsing="false" text="Choose file..." />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER">
+                                             <children>
+                                                <Button mnemonicParsing="false" text="Submit">
+                                                   <font>
+                                                      <Font size="36.0" />
+                                                   </font>
+                                                </Button>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </content>
+                            </Tab>
+                          </tabs>
+                        </TabPane>
+                    </items>
+                  </SplitPane>
                </content>
             </Tab>
-            <Tab text="My games">
+            <Tab text="Fake - show article" />
+            <Tab text="Fake - create article">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                </content>
