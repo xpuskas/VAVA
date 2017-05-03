@@ -11,12 +11,13 @@ import javafx.scene.layout.BorderPane;
 
 
 public class Main extends Application {
+	
 	@Override
 	public void start(Stage primaryStage) throws IOException {
         
 		Parent root = FXMLLoader.load(getClass().getResource("Home.fxml"));
-        primaryStage.setTitle("RPGames v0.01 PRE-ALPHA");
-        primaryStage.setScene(new Scene(root, 1024, 600));
+        primaryStage.setTitle("RPGames v0.03 PRE-ALPHA");
+        primaryStage.setScene(new Scene(root, 1280, 720));
         primaryStage.show();
 	}
 	

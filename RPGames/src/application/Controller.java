@@ -6,8 +6,10 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
 
 public class Controller implements Initializable {
 
@@ -20,9 +22,19 @@ public class Controller implements Initializable {
 	@FXML
 	ImageView image4;
 	@FXML
-	ImageView image5;
-	@FXML
 	ImageView imageBig;
+	@FXML
+	Text desc;
+	@FXML
+	Label label1;
+	@FXML
+	Label label2;
+	@FXML
+	Label label3;
+	@FXML
+	Label label4;
+	@FXML
+	Label labelBig;
 	
 	
 	
@@ -37,7 +49,14 @@ public class Controller implements Initializable {
 		image4.setImage(foto);
 		
 		imageBig.setImage(solco);
+		
+		desc.setText("Už ma z toho jebne asi...  Už ma z toho jebne asi...  Už ma z toho jebne asi...  Už ma z toho jebne asi...  Už ma z toho jebne asi...  Už ma z toho jebne asi...  Už ma z toho jebne asi...  Už ma z toho jebne asi...  Už ma z toho jebne asi...  ");
 
+		label1.setText("Skyrim");
+		label2.setText("Skyrim");
+		label3.setText("Skyrim");
+		label4.setText("Skyrim");
+		labelBig.setText("Oblivion");
 	}
 
 }

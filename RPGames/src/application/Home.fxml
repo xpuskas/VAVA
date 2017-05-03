@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -40,7 +40,7 @@
                            <children>
                               <TextField promptText="TYPE..." BorderPane.alignment="CENTER" />
                               <ComboBox prefWidth="150.0" promptText="Genre" />
-                              <ComboBox prefWidth="150.0" promptText="Studio" />
+                              <TextField promptText="Studio" />
                               <ComboBox prefWidth="150.0" promptText="Year of release" />
                               <CheckBox mnemonicParsing="false" text="high ranked">
                                  <VBox.margin>
@@ -64,33 +64,43 @@
                      <center>
                         <HBox prefHeight="100.0" prefWidth="200.0" spacing="30.0" BorderPane.alignment="CENTER">
                            <children>
-                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="160.0">
+                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="160.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <ImageView fx:id="image1" fitHeight="120.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" />
-                                    <Label text="Label" />
-                                    <ImageView fx:id="image2" fitHeight="120.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" />
-                                    <Label text="Label" />
+                                    <ImageView fx:id="image1" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                    <Label fx:id="label1" text="Label" />
+                                    <ImageView fx:id="image2" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                       <VBox.margin>
+                                          <Insets top="5.0" />
+                                       </VBox.margin></ImageView>
+                                    <Label fx:id="label2" text="Label" />
                                  </children>
                                  <HBox.margin>
                                     <Insets top="10.0" />
                                  </HBox.margin>
                               </VBox>
-                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="280.0">
+                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="280.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <ImageView fx:id="imageBig" fitHeight="210.0" fitWidth="280.0" pickOnBounds="true" preserveRatio="true" />
-                                    <Label text="Label" />
-                                    <TextArea prefHeight="89.0" prefWidth="280.0" />
+                                    <ImageView fx:id="imageBig" fitHeight="315.0" fitWidth="420.0" pickOnBounds="true" preserveRatio="true" />
+                                    <Label fx:id="labelBig" text="Label" />
+                                    <Text fx:id="desc" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="JUSTIFY" wrappingWidth="421.13671875" VBox.vgrow="ALWAYS">
+                                       <VBox.margin>
+                                          <Insets top="10.0" />
+                                       </VBox.margin>
+                                    </Text>
                                  </children>
                                  <HBox.margin>
                                     <Insets top="35.0" />
                                  </HBox.margin>
                               </VBox>
-                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="160.0">
+                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="160.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <ImageView fx:id="image3" fitHeight="120.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" />
-                                    <Label text="Label" />
-                                    <ImageView fx:id="image4" fitHeight="120.0" fitWidth="160.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
-                                    <Label text="Label" />
+                                    <ImageView fx:id="image3" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                    <Label fx:id="label3" text="Label" />
+                                    <ImageView fx:id="image4" fitHeight="150.0" fitWidth="200.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                                       <VBox.margin>
+                                          <Insets top="5.0" />
+                                       </VBox.margin></ImageView>
+                                    <Label fx:id="label4" text="Label" />
                                  </children>
                                  <HBox.margin>
                                     <Insets top="10.0" />
@@ -103,31 +113,39 @@
                </content>
           </Tab>
           <Tab text="Game profile">
-               <content>
-                  <BorderPane prefHeight="200.0" prefWidth="200.0">
-                     <right>
-                        <VBox prefHeight="536.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                           <BorderPane.margin>
-                              <Insets right="10.0" top="10.0" />
-                           </BorderPane.margin>
-                           <children>
-                              <ListView prefHeight="536.0" prefWidth="142.0" />
-                           </children>
-                        </VBox>
-                     </right>
-                  </BorderPane>
-               </content>
+             <content>
+               <fx:include fx:id="tab_gp" source="GameProfile.fxml" />
+             </content>
           </Tab>
             <Tab text="My games">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+					<fx:include fx:id="tab_mg" source="MyGames.fxml" />
                </content>
             </Tab>
-            <Tab text="My games">
+            <Tab text="Content Manager" />
+            <Tab text="Fake - show review">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <fx:include fx:id="tab_srv" source="ShowReview.fxml" />
+               </content>
+               </Tab>
+            <Tab text="Fake - show article">
+                 <content>
+                 <fx:include fx:id="tab_sar" source="ShowArticle.fxml" />
                </content>
             </Tab>
+            <Tab text="Fake - write review">
+               <content>
+                <fx:include fx:id="tab_arv" source="AddReview.fxml" />
+               </content>
+            </Tab>
+            <Tab text="Fake - write article">
+               <content>
+                 <fx:include fx:id="tab_arv" source="AddArticle.fxml" />
+               </content>
+            </Tab>
+            
+            <Tab text="Fake - WORK" />
+
         </tabs>
       </TabPane>
    </center>
@@ -136,16 +154,17 @@
          <children>
             <Label text="Recent games">
                <font>
-                  <Font name="Comic Sans MS" size="24.0" />
+                  <Font name="Comic Sans MS" size="20.0" />
                </font>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
             </Label>
-            <TableView prefHeight="494.0" prefWidth="200.0" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
-              <columns>
-                <TableColumn prefWidth="75.0" text="C1" />
-                <TableColumn prefWidth="75.0" text="C2" />
-              </columns>
-            </TableView>
+            <ListView prefHeight="549.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
          </children>
+         <BorderPane.margin>
+            <Insets top="5.0" />
+         </BorderPane.margin>
       </VBox>
    </left>
 </BorderPane>
