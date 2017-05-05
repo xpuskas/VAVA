@@ -11,7 +11,6 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Screenshot {
 	@Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
-	@Column(name="id")
 	private long screenshotID;
 	@ManyToOne
 	private Game game;

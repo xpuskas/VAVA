@@ -6,6 +6,7 @@ import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,13 +16,12 @@ import javax.persistence.OneToMany;
 @Entity
 public class Genre {
 	@Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
-	@Column(name = "id")
 	private int genreID;
 	private String name;
     @Basic
-    @Column(name="default_image")
     private byte[] image;
 	
+    @ElementCollection
 	@OneToMany(mappedBy="genre")
 	private Collection<Game> games = new ArrayList<Game>();
 

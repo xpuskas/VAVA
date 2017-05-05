@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -17,9 +19,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 @Entity
+@NamedNativeQuery(name = "LastViewedGamesOfUser", query = "SELECT DISTINCT Game.* FROM Game JOIN ViewGameByUser ON Game.gameID=ViewGameByUser.game_gameid JOIN UserAccount ON UserAccount.userID=ViewGameByUser.viewer_userid where viewer_userid=?")
 public class ViewGameByUser {
 	@Id @GeneratedValue(strategy=GenerationType.SEQUENCE)
-	@Column(name = "id")
 	private long viewID;
 	@ManyToOne
 	private UserAccount viewer;

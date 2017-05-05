@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,7 +28,6 @@ import org.hibernate.cfg.Configuration;
 @Inheritance(strategy=InheritanceType.JOINED)
 public abstract class Game {
 	@Id	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	@Column(name="id")
 	private long gameID;
 	private String name;
 	private short releaseYear;
@@ -36,22 +36,25 @@ public abstract class Game {
 	@ManyToOne
 	private Genre genre;
     @Basic
-    @Column(name="game_image")
     private byte[] image;
  
-	
+    @ElementCollection
 	@OneToMany(mappedBy="game", cascade = CascadeType.ALL, orphanRemoval=true)
 	private Collection<Article> articlesAbout = new ArrayList<Article>();
 	
+	@ElementCollection
 	@OneToMany(mappedBy="game", cascade = CascadeType.ALL, orphanRemoval=true)
 	private Collection<ViewGameByUser> views = new ArrayList<ViewGameByUser>();
 	
+	@ElementCollection
 	@OneToMany(mappedBy="game", cascade = CascadeType.ALL, orphanRemoval=true)
 	private Collection<RatingOfGame> ratings = new ArrayList<RatingOfGame>();
 	
+	@ElementCollection
 	@OneToMany(mappedBy="game", cascade = CascadeType.ALL, orphanRemoval=true)
 	private Collection<Comment> comments = new ArrayList<Comment>();
 	
+	@ElementCollection
 	@OneToMany(mappedBy="game", cascade = CascadeType.ALL, orphanRemoval=true)
 	private Collection<Screenshot> screenshots = new ArrayList<Screenshot>();
 	

@@ -18,7 +18,6 @@ import javax.persistence.TemporalType;
 @Inheritance(strategy=InheritanceType.JOINED)
 public class Article {
 	@Id @GeneratedValue(strategy=GenerationType.SEQUENCE)
-	@Column(name = "id")
 	private long articleID;
 	@ManyToOne
 	private UserAccount author;

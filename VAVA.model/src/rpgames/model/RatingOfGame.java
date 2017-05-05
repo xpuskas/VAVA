@@ -10,7 +10,6 @@ import javax.persistence.ManyToOne;
 @Entity
 public class RatingOfGame {
 	@Id @GeneratedValue(strategy=GenerationType.SEQUENCE)
-	@Column(name = "id")
 	private long ratingID;
 	@ManyToOne
 	private UserAccount user;

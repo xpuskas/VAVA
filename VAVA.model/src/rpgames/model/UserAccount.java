@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,51 +19,32 @@ import org.hibernate.cfg.Configuration;
 
 import rpg.database.Hibernator;
 
-@Entity(name="users")
+@Entity
 public class UserAccount {
 	@Id @GeneratedValue(strategy=GenerationType.SEQUENCE)
-	@Column(name = "id")
 	private long userID;
 	private String name;
 	private String password;
 	
+	@ElementCollection
 	@OneToMany(mappedBy="author")
 	private Collection<DeveloperGame> usersGames = new ArrayList<DeveloperGame>();
 	
+	@ElementCollection
 	@OneToMany(mappedBy="author")
 	private Collection<Article> usersArticles = new ArrayList<Article>();
 	
+	@ElementCollection
 	@OneToMany(mappedBy="viewer")
 	private Collection<ViewGameByUser> viewedGames = new ArrayList<ViewGameByUser>();
 	
+	@ElementCollection
 	@OneToMany(mappedBy="user")
 	private Collection<RatingOfGame> ratingsOfGames = new ArrayList<RatingOfGame>();
 	
+	@ElementCollection
 	@OneToMany(mappedBy="author")
 	private Collection<Comment> usersComments = new ArrayList<Comment>();
-
-	public List<OfficialGame> fetchLastViewsPaged(UserAccount user, int pagination) {
-		SessionFactory sessionFactory = Hibernator.getSessionFactory();
-		Session session = null;
-		List<OfficialGame> result = null;
-		try {
-			sessionFactory.openSession();
-			session.beginTransaction();
-			
-			Query query = session.getNamedQuery("OfficialGame.lastViewed");
-			query.setLong("userID", this.userID);
-			query.setMaxResults(pagination);
-			
-			result = (List<OfficialGame>) query.list();
-			session.getTransaction().commit();
-		} catch(Exception e) {
-			e.printStackTrace();
-		} finally {
-			session.close();
-		}
-			
-		return result;
-	}
 	
 	public long getUserID() {
 		return userID;
