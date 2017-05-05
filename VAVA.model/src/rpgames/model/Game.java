@@ -1,8 +1,10 @@
 package rpgames.model;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -19,6 +21,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -26,7 +30,7 @@ import org.hibernate.cfg.Configuration;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public abstract class Game {
+public abstract class Game implements Serializable {
 	@Id	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private long gameID;
 	private String name;

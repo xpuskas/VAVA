@@ -1,7 +1,9 @@
 package rpgames.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,7 +18,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public class Article {
+public class Article implements Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private long articleID;
 	@ManyToOne
@@ -27,6 +29,8 @@ public class Article {
 	private String text;
 	@Temporal(value = TemporalType.DATE)
 	private Date published;
+	@Basic
+	byte[] image;
 	
 	public long getArticleID() {
 		return articleID;
@@ -57,5 +61,11 @@ public class Article {
 	}
 	public void setPublished(Date published) {
 		this.published = published;
+	}
+	public byte[] getImage() {
+		return image;
+	}
+	public void setImage(byte[] image) {
+		this.image = image;
 	}
 }

@@ -1,11 +1,13 @@
 package rpgames.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class DeveloperGame extends Game {
+public class DeveloperGame extends Game implements Serializable {
 	@ManyToOne
 	private UserAccount author;
 

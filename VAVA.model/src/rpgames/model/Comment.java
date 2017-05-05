@@ -1,5 +1,6 @@
 package rpgames.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -13,11 +14,17 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class Comment {
+public class Comment implements Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private long commentID;
 	@ManyToOne
 	private UserAccount author;
+	@ManyToOne
+	private Game game;
+	@Lob
+	private String text;
+	@Temporal(value = TemporalType.TIMESTAMP)
+	private Date posted;
 	
 	public long getCommentID() {
 		return commentID;
@@ -49,10 +56,4 @@ public class Comment {
 	public void setPosted(Date posted) {
 		this.posted = posted;
 	}
-	@ManyToOne
-	private Game game;
-	@Lob
-	private String text;
-	@Temporal(value = TemporalType.TIMESTAMP)
-	private Date posted;
 }

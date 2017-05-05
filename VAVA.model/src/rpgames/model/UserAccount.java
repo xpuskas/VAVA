@@ -1,5 +1,6 @@
 package rpgames.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -20,7 +21,7 @@ import org.hibernate.cfg.Configuration;
 import rpg.database.Hibernator;
 
 @Entity
-public class UserAccount {
+public class UserAccount implements Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private long userID;
 	private String name;
@@ -45,6 +46,10 @@ public class UserAccount {
 	@ElementCollection
 	@OneToMany(mappedBy="author")
 	private Collection<Comment> usersComments = new ArrayList<Comment>();
+	
+	@ElementCollection
+	@OneToMany(mappedBy="addedBy")
+	private Collection<OfficialGame> addedGames = new ArrayList<OfficialGame>();
 	
 	public long getUserID() {
 		return userID;
@@ -108,5 +113,13 @@ public class UserAccount {
 
 	public void setUsersComments(Collection<Comment> usersComments) {
 		this.usersComments = usersComments;
+	}
+
+	public Collection<OfficialGame> getAddedGames() {
+		return addedGames;
+	}
+
+	public void setAddedGames(Collection<OfficialGame> addedGames) {
+		this.addedGames = addedGames;
 	}
 }

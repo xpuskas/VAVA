@@ -9,13 +9,21 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.Month;
 import java.util.Date;
+import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Root;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import rpg.database.Hibernator;
 import rpgames.model.DeveloperGame;
 import rpgames.model.Game;
 import rpgames.model.OfficialGame;
@@ -54,7 +62,7 @@ public abstract class Main {
 		vgbu3.setViewer(user1);
 		vgbu3.setViewed(date3);
 		
-		SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+		SessionFactory sessionFactory = Hibernator.getSessionFactory();
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
 		
@@ -65,9 +73,15 @@ public abstract class Main {
 		session.save(vgbu1);
 		session.save(vgbu2);
 		session.save(vgbu3);
-	
+		
 		session.getTransaction().commit();
 		session.close();
+		
+		/*List<Game> viewedGames = user1.fetchLastViewsPaged(10);
+		System.out.println(viewedGames.size());
+		for(int i = 0; i<viewedGames.size(); i++) {
+			System.out.println(viewedGames.get(i).getName());
+		}*/
 	}
 	
 	public static byte[] readImage(String name) {
@@ -151,5 +165,24 @@ public abstract class Main {
 					e.printStackTrace();
 				}
 		}
+	}
+	public List<OfficialGame> mostRecentGames(int count) {
+		
+		EntityManager entityManager = null;
+		
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+		CriteriaQuery<OfficialGame> criteria = builder.createQuery( OfficialGame.class );
+		Root<OfficialGame> root = criteria.from(OfficialGame.class );
+		criteria.select( root );
+		
+		criteria.orderBy(builder.desc(root.get("added")));
+		
+		Query query = entityManager.createQuery( criteria );
+		query.setMaxResults(count);
+		
+		List<OfficialGame> games = query.getResultList();
+
+		return games;
 	}
 }

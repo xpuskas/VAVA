@@ -1,5 +1,6 @@
 package rpgames.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -19,8 +20,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 @Entity
-@NamedNativeQuery(name = "LastViewedGamesOfUser", query = "SELECT DISTINCT Game.* FROM Game JOIN ViewGameByUser ON Game.gameID=ViewGameByUser.game_gameid JOIN UserAccount ON UserAccount.userID=ViewGameByUser.viewer_userid where viewer_userid=?")
-public class ViewGameByUser {
+//@NamedNativeQuery(name = "LastViewedGamesOfUser", query = "SELECT DISTINCT Game.* FROM Game JOIN ViewGameByUser ON Game.gameID=ViewGameByUser.game_gameid JOIN UserAccount ON UserAccount.userID=ViewGameByUser.viewer_userid where viewer_userid=?")
+public class ViewGameByUser implements Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private long viewID;
 	@ManyToOne

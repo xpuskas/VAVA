@@ -1,5 +1,6 @@
 package rpgames.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -14,7 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
-public class Genre {
+public class Genre implements Serializable {
 	@Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private int genreID;
 	private String name;

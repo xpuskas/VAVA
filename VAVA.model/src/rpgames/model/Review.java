@@ -1,11 +1,13 @@
 package rpgames.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 @Entity
-public class Review extends Article{
+public class Review extends Article implements Serializable {
 	@Lob
 	private String pros;
 	@Lob

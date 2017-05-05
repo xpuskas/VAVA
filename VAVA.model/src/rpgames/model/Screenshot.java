@@ -1,5 +1,7 @@
 package rpgames.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Screenshot {
+public class Screenshot implements Serializable {
 	@Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private long screenshotID;
 	@ManyToOne
