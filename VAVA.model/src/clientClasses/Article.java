@@ -1,37 +1,15 @@
-package rpgames.model;
+package clientClasses;
 
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-@Entity
-@Inheritance(strategy=InheritanceType.JOINED)
 public class Article implements Serializable {
-	@Id @GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private long articleID;
-	@ManyToOne
 	private UserAccount author;
-	@ManyToOne
 	private Game game;
-	@Column(unique=true)
 	private String title;
-	@Lob
 	private String text;
-	@Temporal(value = TemporalType.DATE)
 	private Date published;
-	@Basic
 	byte[] image;
 	
 	public long getArticleID() {

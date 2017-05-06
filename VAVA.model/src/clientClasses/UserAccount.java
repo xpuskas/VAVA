@@ -1,60 +1,26 @@
-package rpgames.model;
+package clientClasses;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-
-import rpg.database.Hibernator;
-
-@Entity
 public class UserAccount implements Serializable {
-	@Id @GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private long userID;
-	@Column(unique=true)
 	private String name;
 	private String password;
-	@Temporal(value = TemporalType.DATE)
 	private Date birthDate;
 
-	@ElementCollection
-	@OneToMany(mappedBy="author")
 	private List<DeveloperGame> developerGames = new ArrayList<DeveloperGame>();
-	
-	@ElementCollection
-	@OneToMany(mappedBy="author")
+
 	private List<Article> usersArticles = new ArrayList<Article>();
 	
-	@ElementCollection
-	@OneToMany(mappedBy="viewer")
 	private List<ViewGameByUser> viewedGames = new ArrayList<ViewGameByUser>();
 	
-	@ElementCollection
-	@OneToMany(mappedBy="user")
 	private List<RatingOfGame> ratingsOfGames = new ArrayList<RatingOfGame>();
 	
-	@ElementCollection
-	@OneToMany(mappedBy="author")
 	private List<Comment> usersComments = new ArrayList<Comment>();
 	
-	@ElementCollection
-	@OneToMany(mappedBy="addedBy")
 	private List<OfficialGame> addedGames = new ArrayList<OfficialGame>();
 	
 	public long getUserID() {

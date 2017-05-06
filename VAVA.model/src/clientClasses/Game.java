@@ -1,66 +1,26 @@
-package rpgames.model;
+package clientClasses;
 
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-
-@Entity
-@Inheritance(strategy=InheritanceType.JOINED)
 public abstract class Game implements Serializable {
-	@Id	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private long gameID;
-	@Column(unique=true)
 	private String name;
 	private short releaseYear;
-	@Lob
 	private String description;
-	@ManyToOne
 	private Genre genre;
-    @Basic
     private byte[] image;
  
-    @ElementCollection
-	@OneToMany(mappedBy="game", cascade = CascadeType.ALL, orphanRemoval=true)
 	private List<Article> articlesAbout = new ArrayList<Article>();
 	
-	@ElementCollection
-	@OneToMany(mappedBy="game", cascade = CascadeType.ALL, orphanRemoval=true)
 	private List<ViewGameByUser> views = new ArrayList<ViewGameByUser>();
 	
-	@ElementCollection
-	@OneToMany(mappedBy="game", cascade = CascadeType.ALL, orphanRemoval=true)
 	private List<RatingOfGame> ratings = new ArrayList<RatingOfGame>();
-	
-	@ElementCollection
-	@OneToMany(mappedBy="game", cascade = CascadeType.ALL, orphanRemoval=true)
+
 	private List<Comment> comments = new ArrayList<Comment>();
-	
-	@ElementCollection
-	@OneToMany(mappedBy="game", cascade = CascadeType.ALL, orphanRemoval=true)
+
 	private List<Screenshot> screenshots = new ArrayList<Screenshot>();
 	
 	public byte[] getImage() {
