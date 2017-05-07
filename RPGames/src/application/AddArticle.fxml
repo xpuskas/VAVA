@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
- <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+<VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.AddArticleController">
                      <children>
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                            <children>
@@ -24,15 +24,15 @@
                                     <Insets right="9.0" />
                                  </HBox.margin>
                               </Label>
-                              <TextField prefHeight="25.0" prefWidth="334.0" />
+                              <TextField fx:id="title" prefHeight="25.0" prefWidth="334.0" promptText="Type title of your article..." />
                            </children>
                         </HBox>
-                        <TextArea prefHeight="236.0" prefWidth="809.0" VBox.vgrow="ALWAYS">
+                        <TextArea fx:id="text" prefHeight="236.0" prefWidth="809.0" promptText="Type your text here..." VBox.vgrow="ALWAYS">
                            <padding>
                               <Insets right="5.0" />
                            </padding>
                         </TextArea>
-                        <Button mnemonicParsing="false" text="Upload cover photo" />
+                        <Button mnemonicParsing="false" onAction="#uploadCover" text="Upload cover photo" />
                         <HBox alignment="CENTER">
                            <children>
                               <Button mnemonicParsing="false" text="SUBMIT">
@@ -50,6 +50,6 @@
                         </HBox>
                      </children>
                      <padding>
-                        <Insets left="10.0" right="5.0" top="5.0" />
+                        <Insets left="10.0" right="5.0" top="10.0" />
                      </padding>
                   </VBox>
