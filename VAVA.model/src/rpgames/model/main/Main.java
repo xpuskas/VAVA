@@ -1,5 +1,6 @@
 package rpgames.model.main;
 
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,14 +20,18 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.swing.ImageIcon;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.jpa.HibernatePersistenceProvider;
+
 
 import rpg.database.Hibernator;
 import rpgames.model.Article;
@@ -35,6 +40,7 @@ import rpgames.model.DeveloperGame;
 import rpgames.model.Game;
 import rpgames.model.Genre;
 import rpgames.model.OfficialGame;
+import rpgames.model.RatingOfGame;
 import rpgames.model.Review;
 import rpgames.model.Screenshot;
 import rpgames.model.UserAccount;
@@ -43,6 +49,9 @@ import rpgames.model.ViewGameByUser;
 public class Main {
 
 	public static void main(String[] args) {
+		byte[] b = {5, 8};
+		Image image = new ImageIcon(b).getImage();
+		
 		/*OfficialGame game1 = new OfficialGame();
 		game1.setName("Skyrim");
 		OfficialGame game2 = new OfficialGame();
@@ -120,6 +129,8 @@ public class Main {
 		
 		game.getComments().add(comment1);
 		game.getComments().add(comment2);
+		game.setDescription("èo to je");
+		
 		
 		SessionFactory sessionFactory = Hibernator.getSessionFactory();
 		Session session = sessionFactory.openSession();
@@ -135,15 +146,19 @@ public class Main {
 		session.beginTransaction();
 		
 		List<String> articles = main.gameArticles(game);
+		List<Comment> comments = game.getComments();
 		
 		session.getTransaction().commit();
 		session.close();
 		
+		for(Comment c : comments)
+			System.out.println(c.getText());
+		
 		System.out.println(articles.size());
 		
 	}
-	
-	public static byte[] readImage(String name) {
+	/*
+	public static byte[] readImage(Image image) {
 	    BufferedImage image = null;
 		
 	    try {
@@ -174,10 +189,10 @@ public class Main {
 	    
 	    
 	    return imageInByte;
-	}
+	}*/
 	//read image, store it to empty game, put it into database, load it from there and write it out
-	public static void managePicture(String name) {
-		byte[] image = readImage(name);
+	/*public static void managePicture(String name) {
+	byte[] image = readImage(name);
 		
 		System.out.println(image.length);
 		
@@ -224,7 +239,7 @@ public class Main {
 					e.printStackTrace();
 				}
 		}
-	}
+	}*/
 	public List<OfficialGame> mostRecentGames(int count) {;
 		
 		EntityManager entityManager = null;
@@ -336,6 +351,34 @@ public class Main {
 		
 		return users.size() > 0 ? users.get(0) : null;
 	}
+	public OfficialGame getOfficialGameByName(String name) {
+		EntityManager entityManager = null;
+		
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+		CriteriaQuery<OfficialGame> criteria = builder.createQuery( OfficialGame.class );
+		
+		Root<OfficialGame> root = criteria.from(OfficialGame.class);
+		criteria.where(builder.equal(builder.upper(root.get("name")), name.toUpperCase()));
+		
+		List<OfficialGame> games = (List<OfficialGame>) entityManager.createQuery( criteria ).getResultList();
+		
+		return games.size() > 0 ? games.get(0) : null;
+	}
+	public DeveloperGame getDeveloperGameByName(String name) {
+		EntityManager entityManager = null;
+		
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+		CriteriaQuery<DeveloperGame> criteria = builder.createQuery( DeveloperGame.class );
+		
+		Root<DeveloperGame> root = criteria.from(DeveloperGame.class);
+		criteria.where(builder.equal(builder.upper(root.get("name")), name.toUpperCase()));
+		
+		List<DeveloperGame> games = (List<DeveloperGame>) entityManager.createQuery( criteria ).getResultList();
+		
+		return games.size() > 0 ? games.get(0) : null;
+	}
 	public List<String> getAllGenres() {
 		EntityManager entityManager = null;
 		
@@ -350,7 +393,7 @@ public class Main {
 		
 		return result;
 	}
-	public List<Game> getLastViewedGamesByUser(UserAccount user, int limit) {
+	public List<String> getLastViewedGamesByUser(UserAccount user, int limit) {
 		EntityManager entityManager = null;
 		
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
@@ -361,16 +404,75 @@ public class Main {
 		Join<ViewGameByUser, UserAccount> userJoin = root.join("viewer");
 		Join<ViewGameByUser, Game> gameJoin = root.join("game");
 		
-		criteria.select(gameJoin);
+		criteria.select(gameJoin.get("name"));
+		criteria.distinct(true);
 		criteria.where(builder.equal(userJoin.get("userID"), user.getUserID()));
 		criteria.orderBy(builder.desc(root.get("viewed")));
 		
 		Query query = entityManager.createQuery( criteria );
 		query.setMaxResults(limit);
 
-		List<Game> games = (List<Game>) query.getResultList();
+		List<String> games = (List<String>) query.getResultList();
 		
 		return games;
 	}
-	
+	public List<String> getGameNamesByFiltration(List<String> parameters, double highRankLimit) {
+		EntityManager entityManager = null;
+		
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+		CriteriaQuery<String> criteria = builder.createQuery( String.class );
+		
+		Root<Game> root = criteria.from(Game.class);
+		
+		
+		List<Predicate> conditions = new ArrayList<Predicate>();
+		//Name of the game
+		if(parameters.get(0)!=null) {
+			//Expression<Boolean> name = builder.and(builder.equal(root.get("name"), parameters.get(0)));
+			conditions.add(builder.equal(builder.upper(root.get("name")), parameters.get(0).toUpperCase()));
+		}
+		//Genre
+		if(parameters.get(1)!=null) {
+			Join<Game, Genre> genreJoin = root.join("genre");
+			conditions.add(builder.equal(builder.upper(genreJoin.get("name")), parameters.get(0).toUpperCase()));
+		}
+		//Studio
+		if(parameters.get(2)!=null) {
+			conditions.add(builder.equal(builder.upper(root.get("studio")), parameters.get(2).toUpperCase()));
+		}
+		//Year of release
+		if(parameters.get(3)!=null) {
+			conditions.add(builder.equal(root.get("releaseYear"), parameters.get(3)));
+		}
+		//High ranked
+		if(parameters.get(4)!=null) {
+			Join<RatingOfGame, Game> ratingJoin = root.join("game");
+			criteria.groupBy(root.get("name"));
+			criteria.having(builder.greaterThanOrEqualTo(builder.avg(ratingJoin.get("value")), highRankLimit));
+		}
+		
+		if(conditions.size()>0) {
+			criteria.where(builder.and(conditions.toArray(new Predicate[conditions.size()])));
+		}
+		
+		List<String> names = (List<String>) entityManager.createQuery(criteria).getResultList();
+		
+		
+		return names;
+	}
+	public Genre getGenreByName(String genreName) {
+		EntityManager entityManager = null;
+		
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+		CriteriaQuery<Genre> criteria = builder.createQuery( Genre.class );
+		
+		Root<Genre> root = criteria.from(Genre.class);
+		criteria.where(builder.equal(builder.upper(root.get("name")), genreName.toUpperCase()));
+		
+		List<Genre> genres = (List<Genre>) entityManager.createQuery( criteria ).getResultList();
+		
+		return genres.size() > 0 ? genres.get(0) : null;
+	}
 }
