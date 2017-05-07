@@ -14,7 +14,7 @@
 
 <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.AddReviewController">
                      <padding>
-                        <Insets left="10.0" right="5.0" top="5.0" />
+                        <Insets left="10.0" right="5.0" top="10.0" />
                      </padding>
                      <children>
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
@@ -27,7 +27,7 @@
                                     <Insets right="9.0" />
                                  </HBox.margin>
                               </Label>
-                              <TextField fx:id="title" prefHeight="25.0" prefWidth="334.0" />
+                              <TextField fx:id="title" prefHeight="25.0" prefWidth="334.0" promptText="Type title of your review here..." />
                            </children>
                         </HBox>
                         <HBox spacing="10.0">
@@ -37,7 +37,7 @@
                                     <Font size="24.0" />
                                  </font>
                               </Label>
-                              <Slider blockIncrement="1.0" majorTickUnit="1.0" max="10.0" minWidth="250.0" minorTickCount="1" prefHeight="38.0" prefWidth="336.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" HBox.hgrow="NEVER" />
+                              <Slider fx:id="slider" blockIncrement="1.0" majorTickUnit="1.0" max="10.0" minWidth="250.0" minorTickCount="1" prefHeight="38.0" prefWidth="336.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" HBox.hgrow="NEVER" />
                            </children>
                            <VBox.margin>
                               <Insets right="400.0" />
@@ -66,9 +66,9 @@
                         </HBox>
                         <HBox>
                            <children>
-                              <TextField prefHeight="25.0" prefWidth="250.0" />
+                              <TextField fx:id="pro1" prefHeight="25.0" prefWidth="250.0" />
                               <Region prefHeight="25.0" prefWidth="113.0" HBox.hgrow="ALWAYS" />
-                              <TextField layoutX="10.0" layoutY="10.0" prefWidth="250.0" />
+                              <TextField fx:id="con1" layoutX="10.0" layoutY="10.0" prefWidth="250.0" />
                            </children>
                            <padding>
                               <Insets right="57.0" />
@@ -76,9 +76,9 @@
                         </HBox>
                         <HBox layoutX="20.0" layoutY="153.0">
                            <children>
-                              <TextField prefHeight="25.0" prefWidth="250.0" />
+                              <TextField fx:id="pro2" prefHeight="25.0" prefWidth="250.0" />
                               <Region prefHeight="25.0" prefWidth="113.0" HBox.hgrow="ALWAYS" />
-                              <TextField layoutX="10.0" layoutY="10.0" prefWidth="250.0" />
+                              <TextField fx:id="con2" layoutX="10.0" layoutY="10.0" prefWidth="250.0" />
                            </children>
                            <padding>
                               <Insets right="57.0" />
@@ -86,9 +86,9 @@
                         </HBox>
                         <HBox layoutX="20.0" layoutY="188.0">
                            <children>
-                              <TextField prefHeight="25.0" prefWidth="250.0" />
+                              <TextField fx:id="pro3" prefHeight="25.0" prefWidth="250.0" />
                               <Region prefHeight="25.0" prefWidth="113.0" HBox.hgrow="ALWAYS" />
-                              <TextField layoutX="10.0" layoutY="10.0" prefWidth="250.0" />
+                              <TextField fx:id="con3" layoutX="10.0" layoutY="10.0" prefWidth="250.0" />
                            </children>
                            <padding>
                               <Insets right="57.0" />
@@ -96,20 +96,20 @@
                         </HBox>
                         <HBox layoutX="20.0" layoutY="223.0">
                            <children>
-                              <TextField prefHeight="25.0" prefWidth="250.0" />
+                              <TextField fx:id="pro4" prefHeight="25.0" prefWidth="250.0" />
                               <Region prefHeight="25.0" prefWidth="113.0" HBox.hgrow="ALWAYS" />
-                              <TextField layoutX="10.0" layoutY="10.0" prefWidth="250.0" />
+                              <TextField fx:id="con4" layoutX="10.0" layoutY="10.0" prefWidth="250.0" />
                            </children>
                            <padding>
                               <Insets right="57.0" />
                            </padding>
                         </HBox>
-                        <TextArea prefHeight="236.0" prefWidth="809.0" VBox.vgrow="ALWAYS">
+                        <TextArea fx:id="text" prefHeight="236.0" prefWidth="809.0" promptText="Type your text here..." VBox.vgrow="ALWAYS">
                            <VBox.margin>
                               <Insets right="5.0" />
                            </VBox.margin>
                         </TextArea>
-                        <Button mnemonicParsing="false" text="Upload cover photo" />
+                        <Button mnemonicParsing="false" onAction="#uploadCover" text="Upload cover photo" />
                         <HBox alignment="CENTER">
                            <children>
                               <Button mnemonicParsing="false" text="SUBMIT">

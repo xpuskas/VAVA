@@ -1,19 +1,27 @@
 package application;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.FileChooser;
 
 public class GameProfileController implements Initializable {
 
@@ -85,6 +93,8 @@ public class GameProfileController implements Initializable {
 	ImageView i4;
 	@FXML
 	ImageView i5;
+	@FXML
+	ListView<String> articles;
 
 	
 	private List<ImageView> user_photos;
@@ -92,6 +102,10 @@ public class GameProfileController implements Initializable {
 	private List<Label> user_names;
 	private List<Text> user_texts;
 	private List<ImageView> screenshots;
+	
+	private Timer timer;
+	
+	int counter = 0;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -172,10 +186,22 @@ public class GameProfileController implements Initializable {
 		i1.setImage(cover_img);
 		i2.setImage(cover_img);
 		i3.setImage(cover_img);
-		i4.setImage(cover_img);
+		i4.setImage(usr_img);
 		i5.setImage(cover_img);
 		
 		handleLists(true);
+		
+		timer = new Timer();
+		
+		timer.scheduleAtFixedRate(new TimerTask() {
+			  @Override
+			  public void run() {
+				if(counter > 4)
+					counter = 0;
+				
+				changeCover(screenshots.get(counter++));
+			  }
+			}, 2*100, 2*100);
 		
 
 	}
@@ -199,8 +225,73 @@ public class GameProfileController implements Initializable {
 		}
 	}
 
-	public void as () {
-		System.out.println("as");
+	
+	public void addReview() throws IOException {
+	   	Main main = new Main();
+    	main.showAddReviewDialog();
+	}
+	
+	
+	public void addArticle() throws IOException {
+	   	Main main = new Main();
+    	main.showAddArticleDialog();
+	}
+	
+	
+	public void uploadScreenshots() throws IOException {
+		FileChooser fc = new FileChooser();
+		File file = fc.showOpenDialog(null);
+		
+		if (file == null) {
+			System.out.println("No file has been chosen!");
+			throw new IOException();
+		}
+		
+		else {
+			System.out.println(file.getName());
+		}
+		
+	}
+	
+	
+	public void handleImage1Click() {
+		timer.cancel();
+		cover.setImage(i1.getImage());
+	}
+	
+	public void handleImage2Click() {
+		timer.cancel();
+		cover.setImage(i2.getImage());
+	}
+	
+	public void handleImage3Click() {
+		timer.cancel();
+		cover.setImage(i3.getImage());
+	}
+	
+	public void handleImage4Click() {
+		timer.cancel();
+		cover.setImage(i4.getImage());
+	}
+	
+	public void handleImage5Click() {
+		timer.cancel();
+		cover.setImage(i5.getImage());
+	}
+	
+	
+	public void changeCover(ImageView image) {
+		cover.setImage(image.getImage());
+	}
+	
+	public void nextPage() {
+		
+	}
+	
+	
+	public void prevPage() {
+		
+		
 	}
 	
 	

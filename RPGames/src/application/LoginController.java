@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.sql.Date;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -52,6 +53,7 @@ public class LoginController implements Initializable {
 
 		if(LoginManager.validate(usrname.getText(), pass.getText().toCharArray())) {
 			stage.close();
+	
 			Main main = new Main();
 			main.launchMainApp();	
 		}

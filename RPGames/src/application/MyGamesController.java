@@ -1,6 +1,7 @@
 package application;
 
 import java.net.URL;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
@@ -28,9 +29,9 @@ public class MyGamesController implements Initializable {
 	@FXML
 	TextField studio;
 	@FXML
-	ComboBox year_game;
+	ComboBox<Integer> year_game;
 	@FXML
-	ComboBox year_project;
+	ComboBox<Integer> year_project;
 	@FXML
 	TextArea desc_game;
 	@FXML
@@ -42,7 +43,11 @@ public class MyGamesController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		
+		int current_year = Calendar.getInstance().get(Calendar.YEAR);
+		for (int i = 1995; i <= current_year; i++) {
+			year_game.getItems().add(i);
+			year_project.getItems().add(i);
+		}
 	}
 
 	
