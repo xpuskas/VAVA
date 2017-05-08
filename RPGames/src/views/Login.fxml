@@ -7,8 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" spacing="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" spacing="18.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
    <children>
       <HBox alignment="TOP_CENTER" spacing="6.0">
          <children>
@@ -86,6 +85,11 @@
             <DatePicker fx:id="birth" prefHeight="25.0" prefWidth="189.0" promptText="Pick a date..." />
          </children>
       </HBox>
+      <Button mnemonicParsing="false" onAction="#uploadProfilePicture" text="Upload profile picture...">
+         <VBox.margin>
+            <Insets bottom="5.0" left="100.0" />
+         </VBox.margin>
+      </Button>
       <Button mnemonicParsing="false" onAction="#registerUser" text="Register!" />
    </children>
    <padding>

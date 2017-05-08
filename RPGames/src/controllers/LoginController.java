@@ -1,7 +1,9 @@
 package controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.sql.Date;
@@ -23,7 +25,10 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import model.Genre;
+import model.Screenshot;
 import model.UserAccount;
 import updater.UpdaterBeanRemote;
 
@@ -43,6 +48,7 @@ public class LoginController implements Initializable {
 	DatePicker birth;
 	
 	private Stage stage;
+	private File file = null;
 	
 	
 	@Override
@@ -50,6 +56,7 @@ public class LoginController implements Initializable {
 		System.out.println("Client started.");
 		
 		birth.setValue(LocalDate.of(1995, 01, 01));
+		
 		
 	}
 	
@@ -128,7 +135,14 @@ public class LoginController implements Initializable {
 			throw new IOException();
 		}
 		
+		if (file == null) {
+			System.out.println("No file has been chosen!");
+			file = new File("foto.jpg");   //TODO
+		}
+		
 		UserAccount usr = new UserAccount(usr_reg.getText(), pass_reg.getText(), Date.valueOf(birth.getValue()));
+		usr.setProfilePic(Files.readAllBytes(file.toPath()));
+		
     	updater.addUser(usr);
     	
 		System.out.println("User has been successfully registered");
@@ -144,6 +158,22 @@ public class LoginController implements Initializable {
 		a.showAndWait();
 	}
 
+	
+	public File uploadProfilePicture() throws IOException, NamingException {
+		FileChooser fc = new FileChooser();
+		file = fc.showOpenDialog(null);
+		
+		if (file == null) {
+			System.out.println("No file has been chosen!");
+			file = new File("foto.jpg");   //TODO
+		}
+		
+		else {
+			System.out.println(file.getName());
+		}
+		
+		return file;
+	}
 	
 	
 }

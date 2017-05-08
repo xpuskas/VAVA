@@ -109,10 +109,10 @@
                               <Insets right="5.0" />
                            </VBox.margin>
                         </TextArea>
-                        <Button mnemonicParsing="false" onAction="#uploadCover" text="Upload cover photo" />
+                        <Button mnemonicParsing="false" onAction="#uploadImage" text="Upload cover photo" />
                         <HBox alignment="CENTER">
                            <children>
-                              <Button mnemonicParsing="false" text="SUBMIT">
+                              <Button mnemonicParsing="false" onAction="#addReview" text="SUBMIT">
                                  <font>
                                     <Font size="16.0" />
                                  </font>

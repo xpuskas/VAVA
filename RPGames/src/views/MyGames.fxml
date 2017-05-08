@@ -25,9 +25,9 @@
                                     </Label>
                                     <TableView fx:id="table" prefHeight="237.0" prefWidth="409.0" VBox.vgrow="ALWAYS">
                                       <columns>
-                                        <TableColumn prefWidth="75.0" text="Title" />
-                                        <TableColumn prefWidth="75.0" text="Genre" />
-                                          <TableColumn prefWidth="75.0" text="Studio" />
+                                        <TableColumn fx:id="t_title" prefWidth="75.0" text="Title" />
+                                        <TableColumn fx:id="t_genre" prefWidth="75.0" text="Genre" />
+                                          <TableColumn fx:id="t_studio" prefWidth="75.0" text="Studio" />
                                       </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -179,7 +179,7 @@
                                           <HBox spacing="10.0">
                                              <children>
                                                 <Label text="Upload cover image" />
-                                                <Button mnemonicParsing="false" text="Choose file..." />
+                                                <Button mnemonicParsing="false" onAction="#uploadProjectImage" text="Choose file..." />
                                              </children>
                                              <VBox.margin>
                                                 <Insets left="5.0" />

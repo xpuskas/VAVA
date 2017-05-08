@@ -9,6 +9,9 @@ public class OfficialGame extends Game implements Serializable {
 	private UserAccount addedBy;
 	private Date added;
 	
+	public OfficialGame() {
+		
+	}
 	
 	public OfficialGame(String name, short releaseYear, String description, Genre genre, String studio, UserAccount addedBy, Date added, byte[] image) {
 		super(name, releaseYear, description, genre, image);

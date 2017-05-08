@@ -28,7 +28,7 @@
                                     </Label>
                                  </children>
                               </HBox>
-                              <ListView fx:id="articles" VBox.vgrow="ALWAYS">
+                              <ListView fx:id="articles" onMouseClicked="#showGameReview" VBox.vgrow="ALWAYS">
                                  <VBox.margin>
                                     <Insets left="5.0" right="5.0" />
                                  </VBox.margin>
@@ -41,11 +41,17 @@
                            <content>
                               <BorderPane BorderPane.alignment="CENTER">
                                  <center>
-                                    <ImageView fx:id="cover" fitHeight="405.0" fitWidth="720.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-                                       <HBox.margin>
-                                          <Insets />
-                                       </HBox.margin>
-                                    </ImageView>
+                  <HBox alignment="TOP_CENTER" spacing="5.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#prevScreenshots" text="&lt;&lt;" />
+                                          <ImageView fx:id="cover" fitHeight="405.0" fitWidth="720.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                                             <HBox.margin>
+                                                <Insets />
+                                             </HBox.margin>
+                                          </ImageView>
+                        <Button mnemonicParsing="false" onAction="#nextScreenshots" text="&gt;&gt;" />
+                     </children>
+                  </HBox>
                                  </center>
                                  <top>
                                     <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" BorderPane.alignment="CENTER">
@@ -126,13 +132,21 @@
                               <Insets bottom="5.0" top="5.0" />
                            </VBox.margin>
                         </HBox>
-                        <Text fx:id="desc" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="JUSTIFY">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
+                        <HBox alignment="TOP_CENTER">
+                           <children>
+                              <Text fx:id="desc" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="JUSTIFY" wrappingWidth="600.0" VBox.vgrow="ALWAYS">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="3.0" />
+                                 </VBox.margin>
+                              </Text>
+                           </children>
                            <VBox.margin>
-                              <Insets bottom="10.0" left="3.0" />
-                           </VBox.margin></Text>
+                              <Insets bottom="20.0" />
+                           </VBox.margin>
+                        </HBox>
                                           <HBox spacing="7.0" VBox.vgrow="ALWAYS">
                                              <children>
                                                 <Label layoutX="10.0" layoutY="61.0" text="Average rank:">

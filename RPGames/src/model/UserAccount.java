@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 public class UserAccount implements Serializable {
 	private long userID;
 
 	private String name;
 	private String password;
 	private Date birthDate;
+    private byte[] profilePic;
 
 	private List<DeveloperGame> developerGames = new ArrayList<DeveloperGame>();
 
@@ -109,5 +111,13 @@ public class UserAccount implements Serializable {
 
 	public void setBirthDate(Date birthDate) {
 		this.birthDate = birthDate;
+	}
+
+	public byte[] getProfilePic() {
+		return profilePic;
+	}
+
+	public void setProfilePic(byte[] profilePic) {
+		this.profilePic = profilePic;
 	}
 }

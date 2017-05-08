@@ -1,14 +1,26 @@
 package controllers;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.naming.Context;
+import javax.naming.NamingException;
+
+import application.EJBContext;
+import application.Utility;
+import fetcher.FetcherBeanRemote;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import model.Game;
+import model.Review;
+import updater.UpdaterBeanRemote;
 
 public class ShowReviewController implements Initializable {
 
@@ -36,20 +48,85 @@ public class ShowReviewController implements Initializable {
 	Text text;
 	@FXML
 	ImageView cover;
+	@FXML
+	VBox vbox;
+	
+	private Review displayedReview;
+	List<Label> pro_holders;
+	List<Label> con_holders;
 	
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		
-		title.setText("The Elder Scrolls V: Skyrim");
-		rank.setText("9.5");
+		pro_holders = new ArrayList<Label>();
+		con_holders = new ArrayList<Label>();
 		
-		Image img = new Image("FILE:foto.jpg");
-		cover.setImage(img);
+		pro_holders.add(pro1);
+		pro_holders.add(pro2);
+		pro_holders.add(pro3);
+		pro_holders.add(pro4);
 		
-		StringBuilder sb = new StringBuilder();
-		sb.append("Skyrim ani nemohol vyjs v príhodnejšom èase. Je studenı november a udalosti nového prírastku v sérii The Elder Scrolls plynú na drsnom severe. Mono vás chví¾ami bude mrazi, ale urèite preijete aj horúce momenty. S drakmi toti nie sú iadne arty, ani keï sa narodíte ako hrdina s draèou dušou. V krajine sa draci neukázali u ve¾mi dlho. Nikto neveril, e ešte nejakí ijú a niektorí dokonca zapochybovali, èi vôbec jestvovali. Prílet okrídleného monštra hneï v úvode však všetkım otvoril oèi a vzbudil oprávnenı strach.\n\n Ale èo je pre domorodcov pohromou, znamená pre hlavného hrdinu spásu. Predsa len je lepšie èeli drakovi, ako sa necha sa. Èoskoro zistíte, e protivník, ktorému neèakane èelíte u krátko po štarte, nie je jedináèik. Celá krajina je náhle zamorená drakmi. Musíte vypátra, preèo tieto zabudnuté monštrá znovu povstali. Navyše sa zamotáte do mocenskıch konfliktov medzi znepriatelenımi frakciami Skyrimu. Cesta k odpovediam a desiatky hodín vzdialenému finále vedie cez rôzne mesteèká, zasneené hory a bludiská s pavúkmi a kostlivcami. O úlohy nie je núdza.\n Jedny sú dôleité, iné v zásade bezvıznamné, ale urèite sa hodia na získanie extra skúseností a odmien. Niektoré súvisia priamo s drakmi, ale budete aj pátra po nezvestnıch osobách, oslobodzova zajatcov, èi špehova a lúpi na diplomatickom veèierku. Vydáte sa po stopách stratenıch artefaktov, absolvujete skúšky do rôznych spoloèenstiev, a budete vymáha dlhy. Niekedy máte monos vo¾by. Je na vás, ku komu sa pridáte a ako vyriešite urèité problémy.\n\n\n V istıch prípadoch sa vám to môe podari aj bez násilia, najmä keï máte rozvinutú vıreènos a vyberáte priliehavé odpovede v dialógoch. Mimochodom, nebuïte prekvapení, keï sa s vami NPC nebudú chcie porozpráva, kım neukonèia konverzáciu medzi sebou. Pri postupe, najmä v bludiskách, èasto narazíte na nenároèné rébusy. Spravidla treba správne usporiada symboly na otoènıch doskách. Riešenie bıva ukryté v okolí. Zvyèajne staèí by len všímavım a dobre sa poobzera okolo seba.");
+		con_holders.add(con1);
+		con_holders.add(con2);
+		con_holders.add(con3);
+		con_holders.add(con4);
+				
+	}
+	
+	
+	public void setDisplayedReview(Review displayedReview) {
+		this.displayedReview = displayedReview;
+	}
+	
+	
+	public void populate() throws NamingException {
+	/* 	Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
+		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+		UpdaterBeanRemote updater = (UpdaterBeanRemote)context.lookup("ejb:/EJB3//UpdaterBean!updater.UpdaterBeanRemote");   */  //TODO
 		
-		text.setText(sb.toString());
+		title.setText(displayedReview.getTitle());
+		rank.setText(((Double)displayedReview.getRank()).toString());
+		cover.setImage(Utility.byte2Image(displayedReview.getImage()));
+		
+		text.setText(displayedReview.getText());
+		displayPros();
+		displayCons();
+		
+		vbox.setVisible(true);
+		
+	}
+	
+	
+	public void displayPros() {
+		String pros = displayedReview.getPros();
+		String[] pro_s = pros.split("\\|");
+		
+		System.out.println(pro_s.length);
+		
+		
+		for (int i = 0; i < pro_s.length; i++) {
+			pro_holders.get(i).setVisible(true);
+			pro_holders.get(i).setText("+ " + pro_s[i]);
+		}
+		
+		for (int i = pro_s.length; i < pro_holders.size(); i++) {
+			pro_holders.get(i).setVisible(false);
+		}  
+	}
+	
+	
+	public void displayCons() {
+		String cons = displayedReview.getCons();
+		String[] con_s = cons.split("\\|");
+		
+		for (int i = 0; i < con_s.length; i++) {
+			con_holders.get(i).setVisible(true);
+			con_holders.get(i).setText("- " + con_s[i]);
+		}
+		
+		for (int i = con_s.length; i < con_holders.size(); i++) {
+			con_holders.get(i).setVisible(false);
+		}
 	}
 }

@@ -24,6 +24,10 @@ public abstract class Game implements Serializable {
 
 	private List<Screenshot> screenshots = new ArrayList<Screenshot>();
 	
+	public Game() {
+		
+	}
+	
 	public Game(String name, short releaseYear, String description, Genre genre, byte[] image) {
 		super();
 		this.name = name;

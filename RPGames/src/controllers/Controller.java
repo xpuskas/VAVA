@@ -17,6 +17,7 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 
 import application.EJBContext;
+import application.Main;
 import application.Utility;
 import fetcher.FetcherBeanRemote;
 import javafx.application.Platform;
@@ -79,7 +80,7 @@ public class Controller implements Initializable {
 	@FXML
 	ComboBox<String> genre;
 	@FXML
-	ComboBox<Integer> year;
+	ComboBox<String> year;
 	@FXML
 	CheckBox high_ranked;
 	@FXML
@@ -88,6 +89,8 @@ public class Controller implements Initializable {
 	TabPane tabs;
 	@FXML
 	GameProfileController tab_gpController;
+	@FXML
+	ShowReviewController tab_srvController;
 
 	
 	List<ImageView> screenshots;
@@ -96,7 +99,7 @@ public class Controller implements Initializable {
 	
 	private int counter = 0;
 	private Timer timer;
-	
+	private static Controller controller = null;
 	
 	private Stage stage;
 	
@@ -104,6 +107,10 @@ public class Controller implements Initializable {
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		controller = this;  //TODO
+		
+		tab_gpController.setController(tab_srvController);  //TODO nested controller reference
+		tab_gpController.setTabs(tabs);
 		
 		screenshots = new ArrayList<ImageView>();
 		labels = new ArrayList<Label>();
@@ -119,8 +126,10 @@ public class Controller implements Initializable {
 		labels.add(label4);
 		
 		int current_year = Calendar.getInstance().get(Calendar.YEAR);
-		for (int i = 1995; i <= current_year; i++) {
-			year.getItems().add(i);
+		
+		year.getItems().add("Any");
+		for (int i = current_year; i >= 1995; i--) {
+			year.getItems().add(Integer.toString(i));
 		}
 		
 	//	handleLists();
@@ -150,9 +159,11 @@ public class Controller implements Initializable {
 			desc.setText(recents.get(i).getDescription());
 		}
 		
-		labelBig.setText(recents.get(0).getName());
-		desc.setText(recents.get(0).getDescription());
-		imageBig.setImage(Utility.byte2Image(recents.get(0).getImage()));
+		if(recents.size() > 0) {
+			labelBig.setText(recents.get(0).getName());
+			desc.setText(recents.get(0).getDescription());
+			imageBig.setImage(Utility.byte2Image(recents.get(0).getImage()));
+		}
 		
 		   ObservableList<PieChart.Data> pieChartData =
 	                FXCollections.observableArrayList(
@@ -191,8 +202,17 @@ public class Controller implements Initializable {
 		List<String> genres = fetcher.getAllGenres();
 		genre.getItems().add("Any");
 		genre.getItems().addAll(genres);
+		
+		refreshLastViewedGames(fetcher);
 
 	}
+	
+	public static void refreshLastViewedGames(FetcherBeanRemote fetcher) {
+		List<String> lastViewedGames = fetcher.getLastViewedGameNamesByUser(Main.getUserName(), -1);
+		controller.recent.getItems().clear();;
+		controller.recent.getItems().addAll(lastViewedGames);
+	}
+	
 	
 	
 	public void setStage(Stage stage) {
@@ -220,21 +240,29 @@ public class Controller implements Initializable {
 	public void handleImage1Click() {
 		timer.cancel();
 		imageBig.setImage(image1.getImage());
+		labelBig.setText(recents.get(0).getName());
+		desc.setText(recents.get(0).getDescription());
 	}
 	
 	public void handleImage2Click() {
 		timer.cancel();
 		imageBig.setImage(image2.getImage());
+		labelBig.setText(recents.get(1).getName());
+		desc.setText(recents.get(1).getDescription());
 	}
 	
 	public void handleImage3Click() {
 		timer.cancel();
 		imageBig.setImage(image3.getImage());
+		labelBig.setText(recents.get(2).getName());
+		desc.setText(recents.get(2).getDescription());
 	}
 	
 	public void handleImage4Click() {
 		timer.cancel();
 		imageBig.setImage(image4.getImage());
+		labelBig.setText(recents.get(3).getName());
+		desc.setText(recents.get(3).getDescription());
 	}
 	
 	
@@ -263,16 +291,68 @@ public class Controller implements Initializable {
 	}
 	
 	
+	public void handleLabelBigClick() throws NamingException {
+		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
+		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+		
+		tab_gpController.setDisplayedGame(fetcher.getGameByName(labelBig.getText()));
+		tab_gpController.populate();
+    	tabs.getSelectionModel().selectNext();
+	}
+	//This will prepare parameters for searching filtered games
+	private List<String> formatSearchParameters() {
+		
+		List<String> parameters = new ArrayList<String>(5);
+		
+		//Name
+		String temp = searchBox.getText();
+		parameters.add(temp.length() == 0  ? null : temp);
+		//Genre
+		try {
+			temp = genre.getValue();
+			if(("Any").equals(temp)) {
+				temp = null;
+			}
+		} catch(NullPointerException | IndexOutOfBoundsException e) {
+			temp = null;
+		}
+		parameters.add(temp);
+		//Studio
+		temp = studio.getText();
+		parameters.add(temp.length() == 0 ? null : temp);
+		//Year
+		try {
+			temp = year.getValue();
+			if(("Any").equals(temp)) {
+				temp = null;
+			}
+		} catch(NullPointerException | IndexOutOfBoundsException e) {
+			temp = null;
+		}
+		parameters.add(temp);
+		//High ranked - if it is to be applied, we just need to put in any string
+		temp = high_ranked.isSelected() ? "" : null;
+		parameters.add(temp);
+		
+		return parameters;
+	}
 	
 	public void changeCover(OfficialGame game) {
 		imageBig.setImage(Utility.byte2Image(game.getImage()));
 		desc.setText(game.getDescription());
 		
-        Platform.runLater(new Runnable() {
+        Platform.runLater(new Runnable() { 
             @Override public void run() {
                 labelBig.setText(game.getName());
             }
         });
+	}
+
+
+
+
+	public static Controller getController() {
+		return controller;
 	}
 	
 

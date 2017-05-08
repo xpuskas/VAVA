@@ -109,7 +109,7 @@
                                     <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
                                        <children>
                                           <ImageView fx:id="imageBig" fitHeight="288.0" fitWidth="512.0" pickOnBounds="true" preserveRatio="true" />
-                                          <Label fx:id="labelBig" text="Label">
+                                          <Label fx:id="labelBig" onMouseClicked="#handleLabelBigClick" text="Label">
                                              <font>
                                                 <Font name="System Bold" size="16.0" />
                                              </font>
