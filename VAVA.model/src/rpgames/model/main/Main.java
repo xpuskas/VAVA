@@ -145,7 +145,7 @@ public class Main {
 		session = sessionFactory.openSession();
 		session.beginTransaction();
 		
-		List<String> articles = main.gameArticles(game);
+		//List<String> articles = main.gameArticles(game);
 		List<Comment> comments = game.getComments();
 		
 		session.getTransaction().commit();
@@ -154,7 +154,7 @@ public class Main {
 		for(Comment c : comments)
 			System.out.println(c.getText());
 		
-		System.out.println(articles.size());
+		//System.out.println(articles.size());
 		
 	}
 	/*
@@ -259,15 +259,22 @@ public class Main {
 
 		return games;
 	}
-	public List<String> gameArticles(Game game) {
-		List<Article> articles = (List<Article>)game.getArticlesAbout();
-		List<String> names = new ArrayList<String>(articles.size());
+	public List<String> articleNamesByGame(Game game) {
+		EntityManager entityManager = null;
 		
-		for(int i = 0; i<articles.size(); i++) {
-			names.add(articles.get(i).getTitle());
-		}
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+		CriteriaQuery<String> criteria = builder.createQuery( String.class );
 		
-		return names;
+		Root<Article> root = criteria.from(Article.class);
+		Join<Article, Game> gameJoin = root.join("game");
+		
+		criteria.select(root.get("title"));
+		criteria.where(builder.equal(gameJoin.get("name"), game.getName()));
+		
+		List<String> articleNames = (List<String>) entityManager.createQuery( criteria ).getResultList();
+		
+		return articleNames;
 	}
 	public Article getArticleByTitle(String title) {
 		EntityManager entityManager = null;
