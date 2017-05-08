@@ -1,0 +1,10 @@
+máj 07, 2017 4:49:10 PM main.Main main
+SEVERE: java.lang.NullPointerException
+java.lang.NullPointerException
+	at main.Main.main(Main.java:36)
+
+máj 07, 2017 4:50:45 PM main.Main main
+SEVERE: java.lang.NullPointerException
+java.lang.NullPointerException
+	at main.Main.main(Main.java:36)
+
