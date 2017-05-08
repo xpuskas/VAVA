@@ -2,36 +2,42 @@ package application;
 	
 import java.io.IOException;
 
-
+import controllers.AddArticleController;
+import controllers.AddReviewController;
+import controllers.Controller;
+import controllers.LoginController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import model.Game;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
 
+
 public class Main extends Application {
 	
+	private static String userName;
 	
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 	
 //	launchMainApp();	
 		
-	FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
+	FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
 	Parent root = (Parent)loader.load();
 	LoginController lc = loader.getController();
 	lc.setStage(primaryStage);
 	
-    primaryStage.setTitle("RPGames v0.21 ALPHA");
+    primaryStage.setTitle("RPGames v0.62 ALPHA");
     primaryStage.setScene(new Scene(root, 640, 480));
 	primaryStage.setResizable(false);  //pevne rozmery
-    primaryStage.show();
+    primaryStage.show();  
 	}
 	
 	public static void main(String[] args) {
@@ -41,7 +47,7 @@ public class Main extends Application {
 	
 	public void launchMainApp() throws IOException {
     	FXMLLoader loader = new FXMLLoader();
-    	loader.setLocation(getClass().getResource("Home.fxml"));
+    	loader.setLocation(getClass().getResource("/views/Home.fxml"));
     	Pane pane = (Pane) loader.load();
     	Stage dialog = new Stage();
     	Scene scena = new Scene(pane, 1280, 800);
@@ -50,9 +56,11 @@ public class Main extends Application {
     	Controller c = loader.getController();
     	c.setStage(dialog); 
     	
-    	dialog.setTitle("RPGames v0.21 ALPHA");
+    	dialog.setTitle("RPGames v0.62 ALPHA");
     	dialog.setScene(scena);
     	dialog.show();
+    	
+    	
     	
 	/*	Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
         primaryStage.setTitle("RPGames v0.05 PRE-ALPHA");
@@ -75,9 +83,9 @@ public class Main extends Application {
 	}
 	
 	
-	public void showAddReviewDialog() throws IOException {
+	public void showAddReviewDialog(Game game) throws IOException {
     	FXMLLoader loader = new FXMLLoader();
-    	loader.setLocation(getClass().getResource("AddReview.fxml"));
+    	loader.setLocation(getClass().getResource("/views/AddReview.fxml"));
     	Pane pane = (Pane) loader.load();
     	Stage dialog = new Stage();
     	Scene scena = new Scene(pane, 1024, 768);
@@ -85,18 +93,19 @@ public class Main extends Application {
     	
     	AddReviewController arc = loader.getController();
     	arc.setStage(dialog);
+    	arc.setReviewedGame(game);
     	
     	dialog.setTitle("Add a review");
     	dialog.setScene(scena);
     	dialog.setResizable(true);
     	dialog.show();
-    	
+ 
 	}
 	
 	
 	public void showAddArticleDialog() throws IOException {
     	FXMLLoader loader = new FXMLLoader();
-    	loader.setLocation(getClass().getResource("AddArticle.fxml"));
+    	loader.setLocation(getClass().getResource("/views/AddArticle.fxml"));
     	Pane pane = (Pane) loader.load();
     	Stage dialog = new Stage();
     	Scene scena = new Scene(pane, 1024, 768);
@@ -110,5 +119,13 @@ public class Main extends Application {
     	dialog.setResizable(true);
     	dialog.show();
     	
+	}
+
+	public static String getUserName() {
+		return userName;
+	}
+
+	public static void setUserName(String userName) {
+		Main.userName = userName;
 	}
 }
