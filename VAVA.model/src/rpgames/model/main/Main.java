@@ -475,4 +475,40 @@ public class Main {
 		
 		return genres.size() > 0 ? genres.get(0) : null;
 	}
+	public double getAverageRankingOfGame(Game game) {
+		EntityManager entityManager = null;
+		
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+		CriteriaQuery<Double> criteria = builder.createQuery( Double.class );
+		
+		Root<RatingOfGame> root = criteria.from(RatingOfGame.class);
+		Join<RatingOfGame, Game> gameJoin = root.join("game");
+		
+		criteria.select(builder.avg(root.get("value")));
+		criteria.where(builder.equal(builder.upper(gameJoin.get("name")), game.getName().toUpperCase()));
+		criteria.groupBy(gameJoin.get("gameID"));
+		
+		List<Double> avg = (List<Double>) entityManager.createQuery( criteria ).getResultList();
+		
+		return avg.size() > 0 ? avg.get(0) : null;
+	}
+	public RatingOfGame getRankingOfGameByUserAndGame(String gameName, String userName) {
+		EntityManager entityManager = null;
+		
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+		CriteriaQuery<RatingOfGame> criteria = builder.createQuery( RatingOfGame.class );
+		
+		Root<RatingOfGame> root = criteria.from(RatingOfGame.class);
+		Join<RatingOfGame, Game> gameJoin = root.join("game");
+		Join<RatingOfGame, UserAccount> userJoin = root.join("user");
+		
+		criteria.select(root);
+		criteria.where(builder.and(builder.equal(builder.upper(gameJoin.get("name")), gameName.toUpperCase()), builder.equal(builder.upper(userJoin.get("name")), userName.toUpperCase())));
+		
+		List<RatingOfGame> avg = (List<RatingOfGame>) entityManager.createQuery( criteria ).getResultList();
+		
+		return avg.size() > 0 ? avg.get(0) : null;
+	}
 }
