@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -24,6 +25,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import language.LanguageManager;
+import logging.LogManager;
 import model.Game;
 import model.Review;
 import updater.UpdaterBeanRemote;
@@ -67,6 +69,7 @@ public class AddReviewController implements Initializable {
 	@FXML
 	Button upload_l;
 	
+	private static final Logger LOGGER = LogManager.createLogger( AddReviewController.class.getName());
 	private Stage stage;
 	private List<TextField> pros;
 	private List <TextField> cons;
@@ -90,16 +93,7 @@ public class AddReviewController implements Initializable {
 		
 		refreshLanguageTexts();
 	}
-	
-	
-	public void setStage(Stage stage) {
-		this.stage = stage;
-	}
-	
-	public void setReviewedGame(Game game) {
-		this.reviewedGame = game;
-	}
-	
+		
 	
 	//Ked sa zmeni jazyk, tak treba nad kazdym controllerom zavolat takuto metodu - teda nad kazdym, kde je co menit
 	public void setLanguage(String language) {
@@ -119,9 +113,8 @@ public class AddReviewController implements Initializable {
 	}
 	
 	public void addReview() throws NamingException, IOException {
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
-		UpdaterBeanRemote updater = (UpdaterBeanRemote)context.lookup("ejb:/EJB3//UpdaterBean!updater.UpdaterBeanRemote");
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
+		UpdaterBeanRemote updater = EJBControl.getUpdater();
 		
 		
 		Review review = new Review();
@@ -140,11 +133,9 @@ public class AddReviewController implements Initializable {
 		} 
 		
 		catch (IOException e) {
-			e.printStackTrace();
+			LogManager.logException(LOGGER, e, true);
 			review.setImage(reviewedGame.getImage());
 		}    
-		
-	//	review.setImage(Files.readAllBytes(file.toPath()));
 		
 		updater.addReview(review);
 		
@@ -153,12 +144,13 @@ public class AddReviewController implements Initializable {
 	
 	
 	public String buildPros() {
+		
 		StringBuilder sb = new StringBuilder();
 		
 		for(TextField pro: pros) {
-			if(!pro.getText().equals("")) {
+			if(!"".equals(pro.getText())) {
 				sb.append(pro.getText());
-				sb.append("|");   //TODO delimiter pipe
+				sb.append("|");  
 			}
 		}
 		
@@ -168,10 +160,11 @@ public class AddReviewController implements Initializable {
 	
 	
 	public String buildCons() {
+		
 		StringBuilder sb = new StringBuilder();
 		
 		for(TextField con: cons) {
-			if(!con.getText().equals("")) {   //TODO
+			if(!"".equals(con.getText())) {   
 				sb.append(con.getText());
 				sb.append("|");
 			}
@@ -182,18 +175,16 @@ public class AddReviewController implements Initializable {
 	}
 	
 	
-	public void uploadImage() throws IOException, NamingException {
+	public void uploadImage(){
 		FileChooser fc = new FileChooser();
 		file = fc.showOpenDialog(null);
-		
-	/*	if (file == null) {
-			System.out.println("No file has been chosen!");  //TODO
-			throw new IOException();
-		}
-		
-		else {
-			System.out.println(file.getName());
-		}    */
 	}
 
+	public void setStage(Stage stage) {
+		this.stage = stage;
+	}
+	
+	public void setReviewedGame(Game game) {
+		this.reviewedGame = game;
+	}
 }

@@ -13,17 +13,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller">
-   <top>
-      <MenuBar BorderPane.alignment="CENTER">
-        <menus>
-          <Menu fx:id="profile" mnemonicParsing="false" text="Profile">
-            <items>
-              <MenuItem fx:id="cl" mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-   </top>
    <center>
       <TabPane fx:id="tabs" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" tabMinWidth="120.0" BorderPane.alignment="CENTER">
         <tabs>
@@ -40,23 +29,14 @@
                               </Label>
                               <TextField fx:id="searchBox" promptText="TYPE..." BorderPane.alignment="CENTER" />
                               <ComboBox fx:id="genre" prefWidth="150.0" promptText="Genre" />
-                              <TextField fx:id="studio" promptText="Studio" />
                               <ComboBox fx:id="year" prefWidth="150.0" promptText="Year of release" />
-                              <HBox spacing="20.0">
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
                                  <children>
-                                    <RadioButton fx:id="radio_game" mnemonicParsing="false" text="game" />
-                                    <RadioButton fx:id="radio_project" mnemonicParsing="false" text="project" />
+                                    <CheckBox fx:id="radio_game" mnemonicParsing="false" text="Che" />
+                                    <CheckBox fx:id="radio_project" mnemonicParsing="false" text="as" />
                                  </children>
                               </HBox>
-                              <HBox>
-                                 <children>
-                                    <CheckBox fx:id="high_ranked" mnemonicParsing="false" text="high ranked">
-                                       <VBox.margin>
-                                          <Insets left="5.0" />
-                                       </VBox.margin>
-                                    </CheckBox>
-                                 </children>
-                              </HBox>
+                              <HBox />
                               <HBox alignment="CENTER">
                                  <children>
                                     <Button fx:id="searchbut" mnemonicParsing="false" onAction="#search" text="Search" />

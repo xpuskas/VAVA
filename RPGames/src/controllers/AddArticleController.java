@@ -6,12 +6,14 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.Calendar;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
 
 import application.EJBContext;
 import application.Main;
+import application.Utility;
 import fetcher.FetcherBeanRemote;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -22,6 +24,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import language.LanguageManager;
+import logging.LogManager;
 import model.Article;
 import model.Game;
 import model.Review;
@@ -40,6 +43,7 @@ public class AddArticleController implements Initializable {
 	@FXML
 	Button submit_b;
 	
+	private static final Logger LOGGER = LogManager.createLogger( AddArticleController.class.getName() );
 	private Stage stage;
 	private File file = null;
 	private Game articleedGame;
@@ -47,7 +51,6 @@ public class AddArticleController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		refreshLanguageTexts();
-		
 	}
 	
 	
@@ -60,8 +63,6 @@ public class AddArticleController implements Initializable {
 		this.articleedGame = game;
 	}
 	
-	
-	//Ked sa zmeni jazyk, tak treba nad kazdym controllerom zavolat takuto metodu - teda nad kazdym, kde je co menit
 	public void setLanguage(String language) {
 		LanguageManager.setLanguage(language);
 		refreshLanguageTexts();
@@ -76,9 +77,8 @@ public class AddArticleController implements Initializable {
 
 	
 	public void addArticle() throws NamingException, IOException {
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
-		UpdaterBeanRemote updater = (UpdaterBeanRemote)context.lookup("ejb:/EJB3//UpdaterBean!updater.UpdaterBeanRemote");
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
+		UpdaterBeanRemote updater = EJBControl.getUpdater();
 		
 		
 		Article article = new Article();
@@ -93,7 +93,7 @@ public class AddArticleController implements Initializable {
 		} 
 		
 		catch (IOException e) {
-			e.printStackTrace();
+			LogManager.logException(LOGGER, e, true);
 			article.setImage(articleedGame.getImage());
 		}    
 		
@@ -107,15 +107,6 @@ public class AddArticleController implements Initializable {
 	public void uploadCover() throws IOException {
 		FileChooser fc = new FileChooser();
 		file = fc.showOpenDialog(null);
-		
-	/*	if (file == null) {
-			System.out.println("No file has been chosen!");  //TODO
-			throw new IOException();
-		}
-		
-		else {
-			System.out.println(file.getName());
-		}    */
 		
 	}
 }

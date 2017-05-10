@@ -7,6 +7,7 @@ import javax.persistence.PersistenceContext;
 
 import fetcher.FetcherBean;
 import fetcher.FetcherBeanRemote;
+import model.Article;
 import model.Comment;
 import model.DeveloperGame;
 import model.Genre;
@@ -80,6 +81,12 @@ public class UpdaterBean implements UpdaterBeanRemote {
 	@Override
 	public void addReview(Review review) {
 		em.persist(review);
+	}
+	
+	
+	@Override
+	public void addArticle(Article article) {
+		em.persist(article);
 	}
 	
 }

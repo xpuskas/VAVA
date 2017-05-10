@@ -18,6 +18,7 @@ import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
@@ -30,6 +31,7 @@ import javax.swing.ImageIcon;
 import application.EJBContext;
 import application.Main;
 import application.Utility;
+import configuration.PropertyManager;
 import fetcher.FetcherBeanRemote;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
@@ -42,14 +44,18 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import language.LanguageManager;
+import logging.LogManager;
 import model.Article;
 import model.Comment;
+import model.DeveloperGame;
 import model.Game;
+import model.OfficialGame;
 import model.RatingOfGame;
 import model.Review;
 import model.Screenshot;
@@ -162,6 +168,8 @@ public class GameProfileController implements Initializable {
 	Label rev_l;
 	@FXML
 	Label art_l;
+	@FXML
+	BorderPane border_p;
 	
 	private ShowReviewController tab_srvController;
 	private ShowArticleController tab_sarController;
@@ -175,7 +183,6 @@ public class GameProfileController implements Initializable {
 	private List<Screenshot> screenshots;
 	
 	private Timer timer = null;
-	//TODO Lukas
 	private int currentCommentPage;
 	private int currentScreenshotPage;
 	private static final int maxCommentsPerPage = 5;
@@ -183,7 +190,9 @@ public class GameProfileController implements Initializable {
 	private Game displayedGame;
 	private TabPane tabs;
 
-	int counter = 0;
+	private int counter = 0;
+	
+	private static final Logger LOGGER = LogManager.createLogger( GameProfileController.class.getName());
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -227,34 +236,11 @@ public class GameProfileController implements Initializable {
 		screenshot_holders.add(i4);
 		screenshot_holders.add(i5);
 		
-		Image usr_img = new Image("file:foto1.jpg");
-		
-		u1_photo.setImage(usr_img);
-		u2_photo.setImage(usr_img);
-		u3_photo.setImage(usr_img);
-		u4_photo.setImage(usr_img);
-		u5_photo.setImage(usr_img);
-		
-		posted_on1.setText("2017-12-24");
-		posted_on2.setText("2017-12-24");
-		posted_on3.setText("2017-12-24");
-		posted_on4.setText("2017-12-24");
-		posted_on5.setText("2017-12-24");
-		
-		usrname1.setText("G4MER");
-		usrname2.setText("G4MER");
-		usrname3.setText("G4MER");
-		usrname4.setText("G4MER");
-		usrname5.setText("G4MER");
-		
-		t1.setText("This is awesome!");
-		t2.setText("This is awesome!");
-		t3.setText("This is awesome!");
-		t4.setText("This is awesome!");
-		t5.setText("This is awesome!");
 		
 		handleLists(false);
 		refreshLanguageTexts();
+		border_p.setVisible(false);
+		
 	}
 	
 	
@@ -303,11 +289,11 @@ public class GameProfileController implements Initializable {
 	
 	
 	
-	public void populate(boolean isProject) throws NamingException {
+	public void populate(Game game) throws NamingException {
 		
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
-		UpdaterBeanRemote updater = (UpdaterBeanRemote)context.lookup("ejb:/EJB3//UpdaterBean!updater.UpdaterBeanRemote");
+		this.displayedGame = game;
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
+		UpdaterBeanRemote updater = EJBControl.getUpdater();
 		
 		handleLists(true);
 		
@@ -315,7 +301,7 @@ public class GameProfileController implements Initializable {
 		genre.setText(displayedGame.getGenre().getName());
 		year.setText(((Short)displayedGame.getReleaseYear()).toString());
 		
-		if(isProject) {
+		if(game instanceof DeveloperGame) {
 			studio_label.setText("Author:");
 			studio.setText(fetcher.getDeveloperGameByName(displayedGame.getName()).getAuthor().getName());
 		}
@@ -341,14 +327,15 @@ public class GameProfileController implements Initializable {
 				  public void run() {
 					if(counter > 4)
 						counter = 0;
-					
-					changeCover(screenshot_holders.get(counter++));
+					try {
+						changeCover(screenshot_holders.get(counter++));
+					} catch(ArrayIndexOutOfBoundsException e) {
+						LogManager.logException(LOGGER, e, false);
+					}
 				  }
-				}, 5000, 5000);   
+				}, Integer.parseInt(PropertyManager.getProps().getProperty("timer_millis")), Integer.parseInt(PropertyManager.getProps().getProperty("timer_millis")));   
 		}
 		
-		//TODO Lukas was here - generovanie toho, že si niekto zobrazil hru
-		if(!isProject) {
 			ViewGameByUser viewRecord = new ViewGameByUser();
 			viewRecord.setGame(displayedGame);
 			viewRecord.setViewed(new Date());
@@ -356,7 +343,6 @@ public class GameProfileController implements Initializable {
 			updater.addVGBU(viewRecord);
 			
 			Controller.refreshLastViewedGames(fetcher);
-		}
 		
 		articles.getItems().clear();
 	    articles.getItems().addAll(fetcher.reviewNamesByGame(displayedGame));
@@ -364,13 +350,13 @@ public class GameProfileController implements Initializable {
 	    reviews.getItems().clear();
 	    reviews.getItems().addAll(fetcher.articleNamesByGame(displayedGame));
 	    
+	    border_p.setVisible(true);
 	  
 	}
 	
 	
 	public void showGameReview() throws NamingException {
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
 		
 		tab_srvController.setDisplayedReview(fetcher.getReviewByTitle(articles.getSelectionModel().getSelectedItem()));
 		tab_srvController.populate();
@@ -379,8 +365,7 @@ public class GameProfileController implements Initializable {
 	
 	
 	public void showGameArticle() throws NamingException {
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
 		
 		tab_sarController.setDispplayedArticle(fetcher.getArticleByTitle(reviews.getSelectionModel().getSelectedItem()));
 		tab_sarController.populate();
@@ -429,18 +414,13 @@ public class GameProfileController implements Initializable {
 	}
 
 	
-	public void addReview() throws IOException {
+	public void addReview(){
 	   	Main main = new Main();
     	main.showAddReviewDialog(displayedGame);
 	}
 	
 	
-	public void showReview() {
-		
-	}
-	
-	
-	public void addArticle() throws IOException {
+	public void addArticle(){
 	   	Main main = new Main();
     	main.showAddArticleDialog(displayedGame);
 	}
@@ -450,33 +430,28 @@ public class GameProfileController implements Initializable {
 		FileChooser fc = new FileChooser();
 		File file = fc.showOpenDialog(null);
 		
-		if (file == null) {
-			System.out.println("No file has been chosen!");
-			throw new IOException();
-		}
-		
-		else {
-			System.out.println(file.getName());
-			
-			Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-			FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
-			UpdaterBeanRemote updater = (UpdaterBeanRemote)context.lookup("ejb:/EJB3//UpdaterBean!updater.UpdaterBeanRemote");
+		if(file!=null) {
+			try {
+				
+			UpdaterBeanRemote updater = EJBControl.getUpdater();
 			
 			Screenshot screen = new Screenshot();
 			screen.setGame(displayedGame);
 			screen.setScreenshot(Files.readAllBytes(file.toPath()));
-			
+
 			updater.addScreenshot(screen);
 			
 			visualiseScreenshots(loadScreenshots());
+			} catch (IOException e) {
+				LogManager.logException(LOGGER, e, true);
+			}
 		}
 	}
 	
 	
 	public void rankGame() throws NamingException {
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		UpdaterBeanRemote updater = (UpdaterBeanRemote)context.lookup("ejb:/EJB3//UpdaterBean!updater.UpdaterBeanRemote");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+		UpdaterBeanRemote updater = EJBControl.getUpdater();
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
 		
 		UserAccount user = fetcher.getUserAccountByName(Main.getUserName());
 		RatingOfGame orig = fetcher.getRankingOfGameByUserAndGame(displayedGame.getName(), user.getName());
@@ -533,7 +508,6 @@ public class GameProfileController implements Initializable {
 		cover.setImage(image.getImage());
 	}
 	
-	//TODO Lukas was here
 	public void nextPage() throws NamingException {
 		++currentCommentPage;
 		List<Comment> comments = loadComments();
@@ -588,8 +562,7 @@ public class GameProfileController implements Initializable {
 	
 	//Can be used anywhere
 	private List<Comment> loadComments() throws NamingException {
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
 		
 		return fetcher.getPagedCommentsForGame(displayedGame, maxCommentsPerPage, currentCommentPage);
 	}
@@ -597,8 +570,7 @@ public class GameProfileController implements Initializable {
 	
 	//Can be used anywhere
 	private List<Screenshot> loadScreenshots() throws NamingException {
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
 		
 		return fetcher.getPagedScreenshotsForGame(displayedGame, maxCommentsPerPage, currentScreenshotPage);
 	}
@@ -608,14 +580,11 @@ public class GameProfileController implements Initializable {
 	private void visualiseComments(List<Comment> comments) throws NamingException {
 		//Show and fill the comments that are available
 		
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
 		
 		for(int i = 0 ; i < comments.size(); i++) {
 			user_names.get(i).setVisible(true);
 			user_names.get(i).setText(comments.get(i).getAuthor().getName());
 			
-			//TODO sformatovat datum -- DONE
 			user_dates.get(i).setVisible(true);
 			user_dates.get(i).setText(comments.get(i).getPosted().toString());
 			
@@ -626,7 +595,6 @@ public class GameProfileController implements Initializable {
 			user_texts.get(i).setVisible(true);
 			user_texts.get(i).setText(comments.get(i).getText());
 			
-			//TODO User zatial nema profilovku ako atribut 
 			user_photos.get(i).setVisible(true);
 			user_photos.get(i).setImage(Utility.byte2Image(comments.get(i).getAuthor().getProfilePic()));
 		}
@@ -664,9 +632,8 @@ public class GameProfileController implements Initializable {
 	
 	
 	public void postComment() throws NamingException {
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
-		UpdaterBeanRemote updater = (UpdaterBeanRemote)context.lookup("ejb:/EJB3//UpdaterBean!updater.UpdaterBeanRemote");
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
+		UpdaterBeanRemote updater = EJBControl.getUpdater();
 		
 		Comment com = new Comment();
 		com.setAuthor(fetcher.getUserAccountByName(Main.getUserName()));

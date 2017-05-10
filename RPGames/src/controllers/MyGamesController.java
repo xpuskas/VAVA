@@ -7,12 +7,14 @@ import java.nio.file.Files;
 import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
 
 import application.EJBContext;
 import application.Main;
+import configuration.PropertyManager;
 import fetcher.FetcherBeanRemote;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,6 +33,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import language.LanguageManager;
+import logging.LogManager;
 import model.DeveloperGame;
 import model.Genre;
 import model.OfficialGame;
@@ -44,7 +47,7 @@ public class MyGamesController implements Initializable {
 	@FXML
 	TableColumn<OfficialGameWrapper, String> t_title;
 	@FXML
-	TableColumn<OfficialGameWrapper, String> t_genre;  //hmmmmm TODO
+	TableColumn<OfficialGameWrapper, String> t_genre;  
 	@FXML
 	TableColumn<OfficialGameWrapper, String> t_studio;
 	@FXML
@@ -117,33 +120,24 @@ public class MyGamesController implements Initializable {
 	
 	private int current_year;
 	
+	private static final Logger LOGGER = LogManager.createLogger(MyGamesController.class.getName());
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
         t_title.setCellValueFactory(new PropertyValueFactory<>("title"));
-        t_genre.setCellValueFactory(new PropertyValueFactory<>("genre")); //to komplikujes :D mam to urobit? to by bolo ponizujuce Ok :D
+        t_genre.setCellValueFactory(new PropertyValueFactory<>("genre")); 
         t_studio.setCellValueFactory(new PropertyValueFactory<>("studio"));
 		
 		current_year = Calendar.getInstance().get(Calendar.YEAR);
-		for (int i = current_year; i >= 1995; i--) { //Nechcem oke to skôr zostupne? to je blbe, ze? je, ale obidem to
+		for (int i = current_year; i >= Integer.parseInt(PropertyManager.getProps().getProperty("default_year")); i--) {
 			year_game.getItems().add(i);
 			year_project.getItems().add(i);
 		}
 		
-		Context context = null;
-		try {
-			context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		FetcherBeanRemote fetcher = null;
-		try {
-			fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
+
 		
 		List<String> genres = fetcher.getAllGenres();
 		genre_game.getItems().add("Any");
@@ -229,24 +223,21 @@ public class MyGamesController implements Initializable {
 	
 	
 	public void showProjectProfile() throws NamingException {
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
 		
 		try {
-			gp_controller.setDisplayedGame(fetcher.getGameByName(projects.getSelectionModel().getSelectedItem()));
-			gp_controller.populate(true);
+			gp_controller.populate(fetcher.getGameByName(projects.getSelectionModel().getSelectedItem()));
 			tabs.getSelectionModel().select(1);
 		} catch(Exception e) {
-			System.out.println("No projects here");
-			e.printStackTrace();
+			LogManager.logException(LOGGER, e, true);
 		}
 	}
 	
 	
 	public void submitGame() throws NamingException, IOException {
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		UpdaterBeanRemote updater = (UpdaterBeanRemote)context.lookup("ejb:/EJB3//UpdaterBean!updater.UpdaterBeanRemote");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+
+		UpdaterBeanRemote updater = EJBControl.getUpdater();
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
 		
 		Genre genre = fetcher.getGenreByName(genre_game.getValue());
 		
@@ -261,15 +252,12 @@ public class MyGamesController implements Initializable {
 				
 		updater.addGame(game);
 		
-		System.out.println("Added new game");
-		
 		refreshOfficialGames(fetcher);
 	}
 	
 	public void submitProject() throws NamingException {
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		UpdaterBeanRemote updater = (UpdaterBeanRemote)context.lookup("ejb:/EJB3//UpdaterBean!updater.UpdaterBeanRemote");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+		UpdaterBeanRemote updater = EJBControl.getUpdater();
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
 		
 		DeveloperGame game = new DeveloperGame();
 		game.setAuthor(fetcher.getUserAccountByName(Main.getUserName()));
@@ -294,37 +282,23 @@ public class MyGamesController implements Initializable {
 		
 		updater.addDeveloperGame(game);
 		
-		System.out.println("Added developer game");
-		
 		refreshDeveloperGames(fetcher);
 		
 	}
 	public void uploadProjectImage() throws IOException, NamingException {
 		FileChooser fc = new FileChooser();
 		file_project = fc.showOpenDialog(null);
-		
-		/*if (file_project == null) { //TODO
-			System.out.println("No file has been chosen!");
-			throw new IOException();
-		}
-		
-		else {
-			System.out.println(file_project.getName());
-		}*/
 	}
 	
 	
 	public void showGameProfile() throws NamingException {
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
 		
 		try {
-			gp_controller.setDisplayedGame(fetcher.getGameByName(table.getSelectionModel().getSelectedItem().getTitle()));
-			gp_controller.populate(false);
+			gp_controller.populate(fetcher.getGameByName(table.getSelectionModel().getSelectedItem().getTitle()));
 			tabs.getSelectionModel().select(1);
-		} catch(NullPointerException e) {
-			System.out.println("Hey, add some games");
-			e.printStackTrace();
+		} catch(Exception e) {
+			LogManager.logException(LOGGER, e, true);
 		}
 	}  
 	
@@ -332,14 +306,5 @@ public class MyGamesController implements Initializable {
 	public void uploadImage() throws IOException, NamingException {
 		FileChooser fc = new FileChooser();
 		file = fc.showOpenDialog(null);
-		
-		/*if (file == null) {
-			System.out.println("No file has been chosen!");  //TODO
-			throw new IOException();
-		}
-		
-		else {
-			System.out.println(file.getName());
-		}*/
 	}
 }

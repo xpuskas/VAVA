@@ -1,6 +1,7 @@
 package application;
 	
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import controllers.AddArticleController;
 import controllers.AddReviewController;
@@ -13,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import language.LanguageManager;
+import logging.LogManager;
 import model.Game;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,19 +25,27 @@ import javafx.scene.layout.Pane;
 
 public class Main extends Application {
 	
+	private static final Logger LOGGER = LogManager.createLogger( Main.class.getName() );
 	private static String userName;
 	
 	@Override
-	public void start(Stage primaryStage) throws IOException {
-	
-//	launchMainApp();	
+	public void start(Stage primaryStage){
+		
+	LogManager.giveLogHandlerToLogger(LOGGER);
 		
 	FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
-	Parent root = (Parent)loader.load();
+	Parent root = null;
+	
+	try {
+		root = (Parent) loader.load();
+	} catch (IOException e) {
+		LogManager.logException(LOGGER, e, true);
+	}
+	
 	LoginController lc = loader.getController();
 	lc.setStage(primaryStage);
 	
-    primaryStage.setTitle("RPGames v0.75 BETA");
+    primaryStage.setTitle("RPGames v0.91 BETA");
     primaryStage.setScene(new Scene(root, 640, 480));
 	primaryStage.setResizable(false);  //pevne rozmery
     primaryStage.show();  
@@ -46,10 +56,17 @@ public class Main extends Application {
 	}
 	
 	
-	public void launchMainApp() throws IOException {
+	public void launchMainApp(){
     	FXMLLoader loader = new FXMLLoader();
     	loader.setLocation(getClass().getResource("/views/Home.fxml"));
-    	Pane pane = (Pane) loader.load();
+    	Pane pane = null;
+    	
+		try {
+			pane = (Pane) loader.load();
+		} catch (IOException e) {
+			LogManager.logException(LOGGER, e, true);
+		}
+		
     	Stage dialog = new Stage();
     	Scene scena = new Scene(pane, 1280, 800);
         scena.getStylesheets().add("application/application.css");
@@ -57,22 +74,15 @@ public class Main extends Application {
     	Controller c = loader.getController();
     	c.setStage(dialog); 
     	
-    	dialog.setTitle("RPGames v0.75 BETA");
+    	dialog.setTitle("RPGames v0.91 BETA");
     	dialog.setScene(scena);
     	dialog.show();
     	
-    	LanguageManager.initialize();
-    	
-	/*	Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
-        primaryStage.setTitle("RPGames v0.05 PRE-ALPHA");
-        primaryStage.setScene(new Scene(root, 640, 480));
-    	primaryStage.setResizable(false);  //pevne rozmery
-        primaryStage.show();*/
-    	
+    	LanguageManager.initialize(); 	
     	
     	/*
-    	 * Stack overflow
-    	 * http://stackoverflow.com/questions/14897194/stop-threads-before-close-my-javafx-program
+    	 * @Author Stack overflow
+    	 * @Link http://stackoverflow.com/questions/14897194/stop-threads-before-close-my-javafx-program
     	 */
         dialog.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -84,10 +94,17 @@ public class Main extends Application {
 	}
 	
 	
-	public void showAddReviewDialog(Game game) throws IOException {
+	public void showAddReviewDialog(Game game){
     	FXMLLoader loader = new FXMLLoader();
     	loader.setLocation(getClass().getResource("/views/AddReview.fxml"));
-    	Pane pane = (Pane) loader.load();
+    	Pane pane = null;
+    	
+		try {
+			pane = (Pane) loader.load();
+		} catch (IOException e) {
+			LogManager.logException(LOGGER, e, true);
+		}
+		
     	Stage dialog = new Stage();
     	Scene scena = new Scene(pane, 1024, 768);
         scena.getStylesheets().add("application/application.css");
@@ -104,10 +121,16 @@ public class Main extends Application {
 	}
 	
 	
-	public void showAddArticleDialog(Game game) throws IOException {
+	public void showAddArticleDialog(Game game) {
     	FXMLLoader loader = new FXMLLoader();
     	loader.setLocation(getClass().getResource("/views/AddArticle.fxml"));
-    	Pane pane = (Pane) loader.load();
+    	Pane pane = null;
+    	
+		try {
+			pane = (Pane) loader.load();
+		} catch (IOException e) {
+			LogManager.logException(LOGGER, e, true);
+		}
     	Stage dialog = new Stage();
     	Scene scena = new Scene(pane, 1024, 768);
         scena.getStylesheets().add("application/application.css");

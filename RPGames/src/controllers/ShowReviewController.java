@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.naming.Context;
@@ -36,6 +37,7 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import language.LanguageManager;
+import logging.LogManager;
 import model.Game;
 import model.Review;
 import updater.UpdaterBeanRemote;
@@ -77,7 +79,7 @@ public class ShowReviewController implements Initializable {
 	private Review displayedReview;
 	List<Label> pro_holders;
 	List<Label> con_holders;
-	
+	private static final Logger LOGGER = LogManager.createLogger(ShowReviewController.class.getName());
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -119,9 +121,6 @@ public class ShowReviewController implements Initializable {
 	
 	
 	public void populate() throws NamingException {
-	/* 	Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
-		UpdaterBeanRemote updater = (UpdaterBeanRemote)context.lookup("ejb:/EJB3//UpdaterBean!updater.UpdaterBeanRemote");   */  //TODO
 		
 		title.setText(displayedReview.getTitle());
 		rank.setText(((Double)displayedReview.getRank()).toString());
@@ -136,20 +135,26 @@ public class ShowReviewController implements Initializable {
 	}
 	
 	
-	public void exportPNG() throws IOException {
+	public void exportPNG(){
 		File file;
 		FileChooser fc = new FileChooser();
 		
 		b1.setVisible(false);
 		b2.setVisible(false);
 		
-		WritableImage img = vbox.snapshot(new SnapshotParameters(), null);
-		
-        ExtensionFilter filter = new FileChooser.ExtensionFilter("PNG image (*.png)", "*.png");
-        fc.getExtensionFilters().add(filter);
-		
-		file = fc.showSaveDialog(null);
-		ImageIO.write(SwingFXUtils.fromFXImage(img, null), "png", file);
+
+		try {
+			WritableImage img = vbox.snapshot(new SnapshotParameters(), null);
+			
+	        ExtensionFilter filter = new FileChooser.ExtensionFilter("PNG image (*.png)", "*.png");
+	        fc.getExtensionFilters().add(filter);
+			
+			file = fc.showSaveDialog(null);
+			ImageIO.write(SwingFXUtils.fromFXImage(img, null), "png", file);
+		} catch (IOException e) {
+			LogManager.logException(LOGGER, e, true);
+
+		}
 		
 		b1.setVisible(true);
 		b2.setVisible(true);
@@ -157,7 +162,7 @@ public class ShowReviewController implements Initializable {
 	}
 	
 	
-	public void exportPdf() throws IOException, DocumentException {
+	public void exportPdf(){
 		
 		File file = new File("img.png");
 		FileChooser fc = new FileChooser();
@@ -165,27 +170,46 @@ public class ShowReviewController implements Initializable {
 		b1.setVisible(false);
 		b2.setVisible(false);
 		
-        ExtensionFilter filter = new FileChooser.ExtensionFilter("PDF document (*.pdf)", "*.pdf");
-        fc.getExtensionFilters().add(filter);
-		
-		WritableImage img = vbox.snapshot(new SnapshotParameters(), null);
-		ImageIO.write(SwingFXUtils.fromFXImage(img, null), "png", file);
-		FileInputStream fis = new FileInputStream("img.png");
-		
-		com.lowagie.text.Image tmp = PngImage.getImage(fis);
-		FileOutputStream fos = new FileOutputStream(fc.showSaveDialog(null));
-		
-		b1.setVisible(true);
-		b2.setVisible(true);
-		
-		Document pdf = new Document(PageSize.B2, 20, 20, 20, 20);
-		PdfWriter.getInstance(pdf, fos);
-		pdf.open();
-		pdf.add(tmp);
-		
-		pdf.close();
-		fos.close();
-		fis.close();
+		Document pdf = null;
+		FileInputStream fis = null;
+		FileOutputStream fos = null;
+		try {
+	        ExtensionFilter filter = new FileChooser.ExtensionFilter("PDF document (*.pdf)", "*.pdf");
+	        fc.getExtensionFilters().add(filter);
+			
+			WritableImage img = vbox.snapshot(new SnapshotParameters(), null);
+			ImageIO.write(SwingFXUtils.fromFXImage(img, null), "png", file);
+			fis = new FileInputStream("img.png");
+			
+			com.lowagie.text.Image tmp = PngImage.getImage(fis);
+			fos = new FileOutputStream(fc.showSaveDialog(null));
+			
+			b1.setVisible(true);
+			b2.setVisible(true);
+			
+			pdf = new Document(PageSize.B2, 20, 20, 20, 20);
+			PdfWriter.getInstance(pdf, fos);
+			pdf.open();
+			pdf.add(tmp);
+		} catch(Exception e) {
+			LogManager.logException(LOGGER, e, true);
+		} finally {
+			try {
+				pdf.close();
+			} catch (Exception e) {
+				LogManager.logException(LOGGER, e, true);
+			}
+			try {
+				fos.close();
+			} catch (IOException e) {
+				LogManager.logException(LOGGER, e, true);
+			}
+			try {
+				fis.close();
+			} catch (IOException e) {
+				LogManager.logException(LOGGER, e, true);
+			}
+		}
 		
 		b1.setVisible(true);
 		b2.setVisible(true);
