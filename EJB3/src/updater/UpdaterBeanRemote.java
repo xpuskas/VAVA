@@ -2,6 +2,7 @@ package updater;
 
 import javax.ejb.Remote;
 
+import model.Article;
 import model.Comment;
 import model.DeveloperGame;
 import model.Genre;
@@ -34,5 +35,7 @@ public interface UpdaterBeanRemote {
 	void addDeveloperGame(DeveloperGame game);
 
 	void addReview(Review review);
+
+	void addArticle(Article article);
 
 }

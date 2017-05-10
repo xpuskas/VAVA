@@ -5,9 +5,11 @@ import java.util.List;
 import javax.ejb.Remote;
 
 import model.Article;
+import model.AvgGenreRatingWrapper;
 import model.Comment;
 import model.DeveloperGame;
 import model.Game;
+import model.GameCountPerGenreWrapper;
 import model.Genre;
 import model.OfficialGame;
 import model.RatingOfGame;
@@ -58,5 +60,20 @@ public interface FetcherBeanRemote {
 	List<String> reviewNamesByGame(Game game);
 
 	Review getReviewByTitle(String title);
+
+	List<Article> articlesByGame(Game game);
+
+	DeveloperGame getDeveloperGameByName(String name);
+
+	List<AvgGenreRatingWrapper> getGenreAvgRating();
+
+	List<String> getGameNamesByFiltration(List<String> parameters, double highRankLimit);
+
+	List<String> getOfficialGameNamesByFiltration(List<String> parameters, double highRankLimit);
+
+	List<String> getDeveloperGameNamesByFiltration(List<String> parameters, double highRankLimit);
+
+	List<GameCountPerGenreWrapper> getGameCountPerGenre();
+
 
 }

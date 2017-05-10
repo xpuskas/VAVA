@@ -10,7 +10,7 @@ public class LanguageManager {
 	private static final List<String> languageOptions = new ArrayList<String>();
 	private static final List<String> languageShortcuts = new ArrayList<String>();
 	
-	private static final String slovak = "Slovenský jazyk";
+	private static final String slovak = "Slovenèina";
 	private static final String slovak_s = "sk";
 	
 	private static final String english = "English";
@@ -35,7 +35,6 @@ public class LanguageManager {
 		}
 		
 		Locale locale = new Locale(language);
-	//	Locale locale = new Locale(slovak_s);
 		resource = ResourceBundle.getBundle("language.language", locale);
 		
 	}

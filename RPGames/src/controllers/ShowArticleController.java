@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.naming.NamingException;
@@ -24,6 +25,8 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -35,6 +38,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import language.LanguageManager;
+import logging.LogManager;
 import model.Article;
 
 public class ShowArticleController implements Initializable {
@@ -54,6 +58,7 @@ public class ShowArticleController implements Initializable {
 	
 	
 	private Article displayedArticle;
+	private static final Logger LOGGER = LogManager.createLogger(ShowArticleController.class.getName());
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -92,7 +97,7 @@ public class ShowArticleController implements Initializable {
 	}
 	
 	
-	public void exportPNG() throws IOException {
+	public void exportPNG(){
 		File file;
 		FileChooser fc = new FileChooser();
 		
@@ -105,7 +110,12 @@ public class ShowArticleController implements Initializable {
         fc.getExtensionFilters().add(filter);
 		
 		file = fc.showSaveDialog(null);
-		ImageIO.write(SwingFXUtils.fromFXImage(img, null), "png", file);
+		try {
+			ImageIO.write(SwingFXUtils.fromFXImage(img, null), "png", file);
+		} catch (IOException e) {
+			LogManager.logException(LOGGER, e, true);
+
+		}
 		
 		b1.setVisible(true);
 		b2.setVisible(true);
@@ -113,7 +123,7 @@ public class ShowArticleController implements Initializable {
 	}
 	
 	
-	public void exportPdf() throws IOException, DocumentException {
+	public void exportPdf(){
 		
 		File file = new File("img.png");
 		FileChooser fc = new FileChooser();
@@ -121,28 +131,50 @@ public class ShowArticleController implements Initializable {
 		b1.setVisible(false);
 		b2.setVisible(false);
 		
-        ExtensionFilter filter = new FileChooser.ExtensionFilter("PDF document (*.pdf)", "*.pdf");
-        fc.getExtensionFilters().add(filter);
+		Document pdf  = null;
+		FileOutputStream fos = null;
+		FileInputStream fis = null;
 		
-		WritableImage img = vbox.snapshot(new SnapshotParameters(), null);
-		ImageIO.write(SwingFXUtils.fromFXImage(img, null), "png", file);
-		FileInputStream fis = new FileInputStream("img.png");
-		
-		com.lowagie.text.Image tmp = PngImage.getImage(fis);
-		FileOutputStream fos = new FileOutputStream(fc.showSaveDialog(null));
-		
-		b1.setVisible(true);
-		b2.setVisible(true);
-		
-		Document pdf = new Document(PageSize.B2, 20, 20, 20, 20);
-		PdfWriter.getInstance(pdf, fos);
-		pdf.open();
-		pdf.add(tmp);
-		
-		pdf.close();
-		fos.close();
-		fis.close();
-		
+		try {
+	        ExtensionFilter filter = new FileChooser.ExtensionFilter("PDF document (*.pdf)", "*.pdf");
+	        fc.getExtensionFilters().add(filter);
+			
+			WritableImage img = vbox.snapshot(new SnapshotParameters(), null);
+			ImageIO.write(SwingFXUtils.fromFXImage(img, null), "png", file);
+			fis = new FileInputStream("img.png");
+			
+			com.lowagie.text.Image tmp = PngImage.getImage(fis);
+			fos = new FileOutputStream(fc.showSaveDialog(null));
+			
+			b1.setVisible(true);
+			b2.setVisible(true);
+			
+			pdf = new Document(PageSize.B2, 20, 20, 20, 20);
+			PdfWriter.getInstance(pdf, fos);
+			pdf.open();
+			pdf.add(tmp);
+		} catch(Exception e) {
+			LogManager.logException(LOGGER, e, true);
+			//TODO Display alert box?
+		} finally {
+			try {
+				pdf.close();
+			} catch (Exception e) {
+				LogManager.logException(LOGGER, e, true);
+			}
+			try {
+				fos.close();
+			} catch (IOException e) {
+				LogManager.logException(LOGGER, e, true);
+			}
+			try {
+				fis.close();
+			} catch (IOException e) {
+				LogManager.logException(LOGGER, e, true);
+			}
+			
+			file.delete();
+		}
 		b1.setVisible(true);
 		b2.setVisible(true);
 	}

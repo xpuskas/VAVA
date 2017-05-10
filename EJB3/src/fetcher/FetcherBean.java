@@ -10,12 +10,16 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import model.Article;
+import model.AvgGenreRatingWrapper;
 import model.Comment;
 import model.DeveloperGame;
 import model.Game;
+import model.GameCountPerGenreWrapper;
 import model.Genre;
 import model.OfficialGame;
 import model.RatingOfGame;
@@ -343,6 +347,23 @@ public class FetcherBean implements FetcherBeanRemote {
 		return games;
 	}
 	
+	@Override
+	public List<Article> articlesByGame(Game game) {
+
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		CriteriaQuery<Article> criteria = builder.createQuery( Article.class );
+		
+		Root<Article> root = criteria.from(Article.class);
+		Join<Article, Game> gameJoin = root.join("game");
+		
+		criteria.select(root);
+		criteria.where(builder.equal(gameJoin.get("name"), game.getName()));
+		
+		List<Article> articleNames = (List<Article>) em.createQuery( criteria ).getResultList();
+		
+		return articleNames;
+	}
 	
 	@Override
 	public List<String> articleNamesByGame(Game game) {
@@ -417,4 +438,194 @@ public class FetcherBean implements FetcherBeanRemote {
 		return articles.size() > 0 ? articles.get(0) : null;	
 	}
 	
+	
+	@Override
+	public DeveloperGame getDeveloperGameByName(String name) {
+		
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		CriteriaQuery<DeveloperGame> criteria = builder.createQuery( DeveloperGame.class );
+		
+		Root<DeveloperGame> root = criteria.from(DeveloperGame.class);
+		criteria.where(builder.equal(builder.upper(root.get("name")), name.toUpperCase()));
+		
+		List<DeveloperGame> games = (List<DeveloperGame>) em.createQuery( criteria ).getResultList();
+		
+		return games.size() > 0 ? games.get(0) : null;
+	}
+	
+	@Override
+	public List<AvgGenreRatingWrapper> getGenreAvgRating() {
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		CriteriaQuery<AvgGenreRatingWrapper> criteria = builder.createQuery( AvgGenreRatingWrapper.class );
+		
+		Root<RatingOfGame> root = criteria.from(RatingOfGame.class);
+		Join<RatingOfGame, Game> gameJoin = root.join("game");
+		
+		criteria.select(
+			    builder.construct(
+			    	AvgGenreRatingWrapper.class,
+			        gameJoin.get("genre"),
+			        builder.avg(root.get("value"))
+			    )
+			);
+		criteria.groupBy(gameJoin.get("genre"));
+		
+		List<AvgGenreRatingWrapper> result = (List<AvgGenreRatingWrapper>) em.createQuery( criteria ).getResultList();
+		
+		return result;
+	}
+	
+	@Override
+	public List<GameCountPerGenreWrapper> getGameCountPerGenre() {
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		CriteriaQuery<GameCountPerGenreWrapper> criteria = builder.createQuery(GameCountPerGenreWrapper.class );
+		
+		Root<Game> root = criteria.from(Game.class);
+		
+		criteria.select(
+			    builder.construct(
+			    	GameCountPerGenreWrapper.class,
+			        root.get("genre"),
+			        builder.count(root)
+			    )
+			);
+		criteria.groupBy(root.get("genre"));
+		
+		List<GameCountPerGenreWrapper> result = (List<GameCountPerGenreWrapper>) em.createQuery( criteria ).getResultList();
+		
+		return result;
+	}
+	
+	@Override
+	public List<String> getGameNamesByFiltration(List<String> parameters, double highRankLimit) {
+		
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		CriteriaQuery<String> criteria = builder.createQuery( String.class );
+		
+		Root<Game> root = criteria.from(Game.class);
+		
+		
+		List<Predicate> conditions = new ArrayList<Predicate>();
+		//Name of the game
+		if(parameters.get(0)!=null) {
+			//Expression<Boolean> name = builder.and(builder.equal(root.get("name"), parameters.get(0)));
+			conditions.add(builder.equal(builder.upper(root.get("name")), parameters.get(0).toUpperCase()));
+		}
+		//Genre
+		if(parameters.get(1)!=null) {
+			Join<Game, Genre> genreJoin = root.join("genre");
+			conditions.add(builder.equal(builder.upper(genreJoin.get("name")), parameters.get(1).toUpperCase()));
+		}
+		//Year of release
+		if(parameters.get(2)!=null) {
+			conditions.add(builder.equal(root.get("releaseYear"), parameters.get(2)));
+		}
+		//High ranked
+		if(parameters.get(3)!=null) {
+			Join<RatingOfGame, Game> ratingJoin = root.join("game");
+			criteria.groupBy(root.get("name"));
+			criteria.having(builder.greaterThanOrEqualTo(builder.avg(ratingJoin.get("value")), highRankLimit));
+		}
+		
+		criteria.select(root.get("name"));
+		if(conditions.size()>0) {
+			criteria.where(builder.and(conditions.toArray(new Predicate[conditions.size()])));
+		}
+		
+		List<String> names = (List<String>) em.createQuery(criteria).getResultList();
+		
+		
+		return names;
+	}
+	
+	@Override
+	public List<String> getOfficialGameNamesByFiltration(List<String> parameters, double highRankLimit) {
+		
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		CriteriaQuery<String> criteria = builder.createQuery( String.class );
+		
+		Root<OfficialGame> root = criteria.from(OfficialGame.class);
+		
+		
+		List<Predicate> conditions = new ArrayList<Predicate>();
+		//Name of the game
+		if(parameters.get(0)!=null) {
+			//Expression<Boolean> name = builder.and(builder.equal(root.get("name"), parameters.get(0)));
+			conditions.add(builder.equal(builder.upper(root.get("name")), parameters.get(0).toUpperCase()));
+		}
+		//Genre
+		if(parameters.get(1)!=null) {
+			Join<OfficialGame, Genre> genreJoin = root.join("genre");
+			conditions.add(builder.equal(builder.upper(genreJoin.get("name")), parameters.get(1).toUpperCase()));
+		}
+		//Year of release
+		if(parameters.get(2)!=null) {
+			conditions.add(builder.equal(root.get("releaseYear"), parameters.get(2)));
+		}
+		//High ranked
+		if(parameters.get(3)!=null) {
+			Join<RatingOfGame, OfficialGame> ratingJoin = root.join("game");
+			criteria.groupBy(root.get("name"));
+			criteria.having(builder.greaterThanOrEqualTo(builder.avg(ratingJoin.get("value")), highRankLimit));
+		}
+		
+		criteria.select(root.get("name"));
+		if(conditions.size()>0) {
+			criteria.where(builder.and(conditions.toArray(new Predicate[conditions.size()])));
+		}
+		
+		List<String> names = (List<String>) em.createQuery(criteria).getResultList();
+		
+		
+		return names;
+	}
+	
+	
+	@Override
+	public List<String> getDeveloperGameNamesByFiltration(List<String> parameters, double highRankLimit) {
+		
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		CriteriaQuery<String> criteria = builder.createQuery( String.class );
+		
+		Root<DeveloperGame> root = criteria.from(DeveloperGame.class);
+		
+		
+		List<Predicate> conditions = new ArrayList<Predicate>();
+		//Name of the game
+		if(parameters.get(0)!=null) {
+			//Expression<Boolean> name = builder.and(builder.equal(root.get("name"), parameters.get(0)));
+			conditions.add(builder.equal(builder.upper(root.get("name")), parameters.get(0).toUpperCase()));
+		}
+		//Genre
+		if(parameters.get(1)!=null) {
+			Join<DeveloperGame, Genre> genreJoin = root.join("genre");
+			conditions.add(builder.equal(builder.upper(genreJoin.get("name")), parameters.get(1).toUpperCase()));
+		}
+		//Year of release
+		if(parameters.get(2)!=null) {
+			conditions.add(builder.equal(root.get("releaseYear"), parameters.get(2)));
+		}
+		//High ranked
+		if(parameters.get(3)!=null) {
+			Join<RatingOfGame, DeveloperGame> ratingJoin = root.join("game");
+			criteria.groupBy(root.get("name"));
+			criteria.having(builder.greaterThanOrEqualTo(builder.avg(ratingJoin.get("value")), highRankLimit));
+		}
+		
+		criteria.select(root.get("name"));
+		if(conditions.size()>0) {
+			criteria.where(builder.and(conditions.toArray(new Predicate[conditions.size()])));
+		}
+		
+		List<String> names = (List<String>) em.createQuery(criteria).getResultList();
+		
+		
+		return names;
+	}
 }

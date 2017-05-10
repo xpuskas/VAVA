@@ -11,6 +11,7 @@ import java.util.List;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -18,6 +19,7 @@ import javax.naming.NamingException;
 import application.EJBContext;
 import application.LoginManager;
 import application.Main;
+import configuration.PropertyManager;
 import fetcher.FetcherBeanRemote;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -36,6 +38,7 @@ import javafx.scene.control.ComboBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import language.LanguageManager;
+import logging.LogManager;
 import model.Genre;
 import model.Screenshot;
 import model.UserAccount;
@@ -78,7 +81,7 @@ public class LoginController implements Initializable {
 	
 	private Stage stage;
 	private File file = null;
-	
+	private static final Logger LOGGER = LogManager.createLogger(LoginController.class.getName());
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -86,11 +89,10 @@ public class LoginController implements Initializable {
 		System.out.println("Client started.");
 		
 		birth.setValue(LocalDate.of(1995, 01, 01));
-// TODO		language.getItems().addAll(LanguageManager.getLanguageOptions());
-		language.getItems().add("slovak_s");
-		language.getItems().add("english_s");
-		
-    	/**
+		LanguageManager.initialize();
+		language.getItems().addAll(LanguageManager.getLanguageOptions());	
+    	
+		/**
          * @author Steve Park
          * URL: http://stackoverflow.com/questions/14522680/javafx-choicebox-events
          */
@@ -102,10 +104,11 @@ public class LoginController implements Initializable {
        
 		
 		refreshLanguageTexts();
+		
+		
+		
 	}
-	//TODO Toto spustiù po vybranÌ jazyka
-	//Na tie jazyky bude dropdown. Moûnosti doÚ dostaneö LanguageManager.getLanguageOptions()
-	//Kam d·ö listener na nastavenie, to je mi aj jedno, ale nech zavol· t˙to metodu(pod tymto riadkom)
+	
 	public void setLanguage(String language) {
 		LanguageManager.setLanguage(language);
 		refreshLanguageTexts();
@@ -136,14 +139,13 @@ public class LoginController implements Initializable {
 		this.stage = stage;
 	}
 	
-	public void signIN() throws IOException, NamingException {
+	public void signIN() throws NamingException {
 		
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
 		char[] psswd = null;
 		
 		try {
-		psswd = fetcher.getUserAccountByName(usrname.getText()).getPassword().toCharArray();
+			psswd = fetcher.getUserAccountByName(usrname.getText()).getPassword().toCharArray();
 		}
 	
 		catch (NullPointerException e) {
@@ -151,6 +153,7 @@ public class LoginController implements Initializable {
 			a.setContentText(LanguageManager.getProperty("LOGIN_ALERT_INCORRECT"));
 			a.setHeaderText("");
 			a.showAndWait();
+			LogManager.logException(LOGGER, e, true);
 			return;
 		}
 
@@ -172,70 +175,89 @@ public class LoginController implements Initializable {
 				
 	}
 	
-	public void registerUser() throws IOException, NamingException {
+	public void registerUser() throws NamingException {  //TODO
 		
-    	if(Calendar.getInstance().get(Calendar.YEAR) - birth.getValue().getYear() < 12) {
+    	if(Calendar.getInstance().get(Calendar.YEAR) - birth.getValue().getYear() < Integer.parseInt(PropertyManager.getProps().getProperty("min_age"))) {
     		Alert chyba = new Alert(AlertType.ERROR);
     		chyba.setContentText(LanguageManager.getProperty("LOGIN_LOW_AGE"));
     		chyba.showAndWait();
-    		
-    		throw new IOException();
     	}
     	
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		UpdaterBeanRemote updater = (UpdaterBeanRemote)context.lookup("ejb:/EJB3//UpdaterBean!updater.UpdaterBeanRemote");
+		UpdaterBeanRemote updater = EJBControl.getUpdater();
 		
 		if(!pass_reg.getText().equals(pass_reg_2.getText())) {
-			Alert a = new Alert(AlertType.ERROR);
-			a.setContentText(LanguageManager.getProperty("LOGIN_REGISTER_PASSWORD_MISMATCH"));
-			a.setHeaderText("");
-			a.showAndWait();
-			throw new IOException();
+
+			try {
+				Alert a = new Alert(AlertType.ERROR);
+				a.setContentText(LanguageManager.getProperty("LOGIN_REGISTER_PASSWORD_MISMATCH"));
+				a.setHeaderText("");
+				a.showAndWait();
+				throw new IOException();
+			} catch (IOException e) {
+				LogManager.logException(LOGGER, e, true);
+				return;
+			}	
 		}
 		
 		if(pass_reg.getText().length() < 5) {
-			Alert a = new Alert(AlertType.ERROR);
-			a.setContentText(LanguageManager.getProperty("LOGIN_SHORT_PASSWORD"));
-			a.setHeaderText("");
-			a.showAndWait();
-			throw new IOException();
+			try {
+				Alert a = new Alert(AlertType.ERROR);
+				a.setContentText(LanguageManager.getProperty("LOGIN_SHORT_PASSWORD"));
+				a.setHeaderText("");
+				a.showAndWait();
+				throw new IOException();
+			} catch (IOException e) {
+				LogManager.logException(LOGGER, e, true);
+				return;
+			}
+			
+
 		}
 		
 		if (file == null) {
-			System.out.println("No file has been chosen!");
-			file = new File("foto.jpg");   //TODO
+			file = new File(PropertyManager.getProps().getProperty("default_pic")); 
 		}
 		
 		UserAccount usr = new UserAccount(usr_reg.getText(), pass_reg.getText(), Date.valueOf(birth.getValue()));
-		usr.setProfilePic(Files.readAllBytes(file.toPath()));
 		
-    	updater.addUser(usr);
-    	
-		System.out.println("User has been successfully registered");
+		try {
+			usr.setProfilePic(Files.readAllBytes(file.toPath()));
+			
+	    	updater.addUser(usr);
+			
+			usr_reg.clear();
+			pass_reg.clear();
+			pass_reg_2.clear();
+			
+			Alert a = new Alert(AlertType.INFORMATION);
+			a.setContentText(LanguageManager.getProperty("LOGIN_REPORT_CREATE_SUCCESS"));
+			a.setHeaderText("");
+			a.setTitle(LanguageManager.getProperty("LOGIN_SUCCESS"));
+			a.showAndWait();
+			
+		} catch (IOException e) {
+			
+			Alert a = new Alert(AlertType.INFORMATION);
+			a.setContentText(LanguageManager.getProperty("LOGIN_REPORT_NO_PIC"));
+			a.setHeaderText("");
+			a.setTitle(LanguageManager.getProperty("LOGIN_REPORT_NO_PIC_HEADER"));
+			a.showAndWait();
+			LogManager.logException(LOGGER, e, true);
+		}
 		
-		usr_reg.clear();
-		pass_reg.clear();
-		pass_reg_2.clear();
-		
-		Alert a = new Alert(AlertType.INFORMATION);
-		a.setContentText(LanguageManager.getProperty("LOGIN_REPORT_CREATE_SUCCESS"));
-		a.setHeaderText("");
-		a.setTitle(LanguageManager.getProperty("LOGIN_SUCCESS"));
-		a.showAndWait();
 	}
 
 	
-	public File uploadProfilePicture() throws IOException, NamingException {
+	public File uploadProfilePicture() throws NamingException {
 		FileChooser fc = new FileChooser();
 		file = fc.showOpenDialog(null);
 		
-		if (file == null) {
-			System.out.println("No file has been chosen!");
-			file = new File("foto.jpg");   //TODO
-		}
-		
-		else {
-			System.out.println(file.getName());
+		try {
+				if (file == null) {
+					file = new File(PropertyManager.getProps().getProperty("default_pic"));  
+				}
+		} catch (NullPointerException e) {
+			LogManager.logException(LOGGER, e, true);
 		}
 		
 		return file;

@@ -1,9 +1,5 @@
 package controllers;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,19 +7,19 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
 import application.EJBContext;
 import application.Main;
 import application.Utility;
+import configuration.PropertyManager;
 import fetcher.FetcherBeanRemote;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
@@ -32,24 +28,18 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import language.LanguageManager;
+import logging.LogManager;
 import model.AvgGenreRatingWrapper;
-import model.Game;
+import model.GameCountPerGenreWrapper;
 import model.OfficialGame;
-import updater.UpdaterBeanRemote;
 
 public class Controller implements Initializable {
 
@@ -83,13 +73,9 @@ public class Controller implements Initializable {
 	@FXML
 	TextField searchBox;
 	@FXML
-	TextField studio;
-	@FXML
 	ComboBox<String> genre;
 	@FXML
 	ComboBox<String> year;
-	@FXML
-	CheckBox high_ranked;
 	@FXML
 	ListView<String> recent;
 	@FXML
@@ -107,9 +93,9 @@ public class Controller implements Initializable {
 	@FXML
 	Label search_res_label;
 	@FXML
-	RadioButton radio_game;
+	CheckBox radio_game;
 	@FXML
-	RadioButton radio_project;
+	CheckBox radio_project;
 	@FXML
 	Label recent_games_label;
 	@FXML
@@ -120,10 +106,6 @@ public class Controller implements Initializable {
 	Label gpbg;
 	@FXML
 	Button searchbut;
-	@FXML
-	Menu profile;
-	@FXML
-	MenuItem cl;
 	@FXML
 	Tab home;
 	@FXML
@@ -145,6 +127,7 @@ public class Controller implements Initializable {
 	private Timer timer;
 	private static Controller controller = null;
 	private static final String noOption = "N/A";
+	private static final Logger LOGGER = LogManager.createLogger( Controller.class.getName());
 	
 	private Stage stage;
 	
@@ -176,27 +159,15 @@ public class Controller implements Initializable {
 		int current_year = Calendar.getInstance().get(Calendar.YEAR);
 		
 		year.getItems().add(noOption);
-		for (int i = current_year; i >= 1995; i--) {
+		
+		for (int i = current_year; i >= Integer.parseInt(PropertyManager.getProps().getProperty("default_year")); i--) {
 			year.getItems().add(Integer.toString(i));
 		}
 		
 		search_res_label.setVisible(false);
 		search_res.setVisible(false);
 		
-		Context context = null;
-		try {
-			context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		FetcherBeanRemote fetcher = null;
-		try {
-			fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
 
 		recents = fetcher.mostRecentGames(4);
 		Image img = null;
@@ -214,23 +185,12 @@ public class Controller implements Initializable {
 			imageBig.setImage(Utility.byte2Image(recents.get(0).getImage()));
 		}
 		
-		   ObservableList<PieChart.Data> pieChartData =
-	                FXCollections.observableArrayList(
-	                new PieChart.Data("Skyrim", 30),
-	                new PieChart.Data("Oblivion", 20),
-	                new PieChart.Data("Morrowind", 10),
-		   			new PieChart.Data("Portal 2", 25),
-	                new PieChart.Data("Ace Combat 7", 15));
-		   			
-		chart.setData(pieChartData);
-		
-		ObservableList<PieChart.Data> pieChartData2 =
-                FXCollections.observableArrayList(
-                new PieChart.Data("Bethesda", 30),
-                new PieChart.Data("Valve", 20),
-                new PieChart.Data("Namco", 10));
-	   			
-	chart_studio.setData(pieChartData2);
+		try {
+			fillCharts();
+		} catch (NamingException e) {
+			LogManager.logException(LOGGER, e, true);
+		}
+
 	
 	
 	timer = new Timer();
@@ -240,20 +200,25 @@ public class Controller implements Initializable {
 			if(counter > 3)
 				counter = 0;
 			
-			changeCover(recents.get(counter++));
+			try {
+				changeCover(recents.get(counter++));
+			} catch(ArrayIndexOutOfBoundsException e) {
+				LogManager.logException(LOGGER, e, true);
+			}
+			
 		  }
-		}, 3000, 3000);   
+		}, Integer.parseInt(PropertyManager.getProps().getProperty("timer_millis")), Integer.parseInt(PropertyManager.getProps().getProperty("timer_millis")));   
 	
 	
-		//TODO - Lukas was here
+
 		List<String> genres = fetcher.getAllGenres();
 		genre.getItems().add(noOption);
 		genre.getItems().addAll(genres);
 		
 		refreshLastViewedGames(fetcher);
-		
-		//TODO - pre graf - populatity by genre
-		List<AvgGenreRatingWrapper> avgGenreRat = fetcher.getGenreAvgRating();
+				
+		radio_game.setSelected(true);
+		radio_project.setSelected(true);
 		
 		refreshLanguageTexts();
 
@@ -262,6 +227,8 @@ public class Controller implements Initializable {
 	public void setLanguage(String language) {
 		LanguageManager.setLanguage(language);
 		refreshLanguageTexts();
+		
+		
 	}
 	
 	public void refreshLanguageTexts() {
@@ -272,14 +239,10 @@ public class Controller implements Initializable {
 		search_res_label.setText(LanguageManager.getProperty("HOME_SEARCH_RES_LABEL")); //
 		searchBox.setPromptText(LanguageManager.getProperty("HOME_SEARCH_BOX"));
 		genre.setPromptText(LanguageManager.getProperty("HOME_GENRE"));
-		studio.setPromptText(LanguageManager.getProperty("HOME_STUDIO"));
 		year.setPromptText(LanguageManager.getProperty("HOME_YEAR"));
 		radio_game.setText(LanguageManager.getProperty("HOME_RGAME"));
 		radio_project.setText(LanguageManager.getProperty("HOME_RPROJECT"));
-		high_ranked.setText(LanguageManager.getProperty("HOME_HIGH_RANKED"));
 		searchbut.setText(LanguageManager.getProperty("HOME_SEARCHBUT"));
-		profile.setText(LanguageManager.getProperty("HOME_PROFILE"));
-		cl.setText(LanguageManager.getProperty("HOME_CLOSE"));
 		home.setText(LanguageManager.getProperty("HOME_HOME"));
 		gp.setText(LanguageManager.getProperty("HOME_GAMEPROFILE"));
 		mg.setText(LanguageManager.getProperty("HOME_MYGAMES"));
@@ -294,38 +257,49 @@ public class Controller implements Initializable {
 	}
 	
 	
+	public void fillCharts() throws NamingException {
+		
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
+		List<AvgGenreRatingWrapper> avgGenreRat = fetcher.getGenreAvgRating();
+		List<GameCountPerGenreWrapper> avgStudioRat = fetcher.getGameCountPerGenre();
+		
+		
+		
+			ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+		   
+		   for(AvgGenreRatingWrapper agrw: avgGenreRat) {
+			   pieChartData.add(new PieChart.Data(agrw.getGenreName().getName(), agrw.getValue()));
+		   }
+		   			
+		chart.setData(pieChartData);
+		
+		   ObservableList<PieChart.Data> pieChartData2 = FXCollections.observableArrayList();
+		   
+		   for(GameCountPerGenreWrapper asrw: avgStudioRat) {
+			   pieChartData2.add(new PieChart.Data(asrw.getGenre().getName(), asrw.getValue()));
+		   }
+		
+			chart_studio.setData(pieChartData2);  
+		
+	}
+	
 	
 	public void setStage(Stage stage) {
 		this.stage = stage;
 	}
 	
 	
+	public void logOut() {
+		stage.close();
+	}
+	
+	
 	public void showGameProfile() throws NamingException {
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
 		
-		tab_gpController.setDisplayedGame(fetcher.getGameByName(recent.getSelectionModel().getSelectedItem()));
-		tab_gpController.populate(false);
+		tab_gpController.populate(fetcher.getGameByName(recent.getSelectionModel().getSelectedItem()));
 		tabs.getSelectionModel().select(1);
 	}
-	
-	
-	public void handleLists() {
-		Image foto = new Image("file:foto1.jpg");
-		Image solco = new Image("file:foto.jpg");
-		
-		
-		for (ImageView img: screenshots) {
-			img.setImage(foto);
-		}
-		
-		image3.setImage(solco);
-		
-		for (Label lbl: labels) {
-			lbl.setText("Skyrim");
-		}
-	}
-	
 	
 	public void handleImage1Click() {
 		timer.cancel();
@@ -356,38 +330,52 @@ public class Controller implements Initializable {
 	}
 	
 	
-	public void handleLabel1Click() throws NamingException {
-    	tab_gpController.setDisplayedGame(recents.get(0));
-		tab_gpController.populate(false);
-    	tabs.getSelectionModel().selectNext();
+	public void handleLabel1Click() {
+		try {
+			tab_gpController.populate(recents.get(0));
+			tabs.getSelectionModel().selectNext();
+		} catch (NamingException e) {
+			LogManager.logException(LOGGER, e, true);
+		}
 	}
 	
-	public void handleLabel2Click() throws NamingException {
-    	tab_gpController.setDisplayedGame(recents.get(1));
-		tab_gpController.populate(false);
-    	tabs.getSelectionModel().selectNext();
+	public void handleLabel2Click() {
+		try {
+			tab_gpController.populate(recents.get(1));
+			tabs.getSelectionModel().selectNext();
+		} catch (NamingException e) {
+			LogManager.logException(LOGGER, e, true);
+		}
 	}
 	
-	public void handleLabel3Click() throws NamingException {
-    	tab_gpController.setDisplayedGame(recents.get(2));
-		tab_gpController.populate(false);
-    	tabs.getSelectionModel().selectNext();
+	public void handleLabel3Click() {
+		try {
+			tab_gpController.populate(recents.get(2));
+			tabs.getSelectionModel().selectNext();
+		} catch (NamingException e) {
+			LogManager.logException(LOGGER, e, true);
+		}
 	}
 	
-	public void handleLabel4Click() throws NamingException {
-    	tab_gpController.setDisplayedGame(recents.get(3));
-		tab_gpController.populate(false);
-    	tabs.getSelectionModel().selectNext();
+	public void handleLabel4Click() {
+		try {
+			tab_gpController.populate(recents.get(3));
+			tabs.getSelectionModel().selectNext();
+		} catch (NamingException e) {
+			LogManager.logException(LOGGER, e, true);
+		}
 	}
 	
 	
 	public void handleLabelBigClick() throws NamingException {
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
 		
-		tab_gpController.setDisplayedGame(fetcher.getGameByName(labelBig.getText()));
-		tab_gpController.populate(false);
-    	tabs.getSelectionModel().selectNext();
+		try {
+			tab_gpController.populate(fetcher.getGameByName(labelBig.getText()));
+	    	tabs.getSelectionModel().selectNext();
+		} catch (NamingException e) {
+			LogManager.logException(LOGGER, e, true);
+		}
 	}
 	
 	
@@ -409,9 +397,8 @@ public class Controller implements Initializable {
 			temp = null;
 		}
 		parameters.add(temp);
-		//Studio
-		temp = studio.getText();
-		parameters.add(temp.length() == 0 ? null : temp);
+
+
 		//Year
 		try {
 			temp = year.getValue();
@@ -422,22 +409,29 @@ public class Controller implements Initializable {
 			temp = null;
 		}
 		parameters.add(temp);
-		//High ranked - if it is to be applied, we just need to put in any string
-		temp = high_ranked.isSelected() ? "" : null;
+		temp = null;
 		parameters.add(temp);
 		
 		return parameters;
 	}
 	
 	
-	public void search() { //TODO
+	public void search() throws NamingException { 
 		
-		search_res.getItems().addAll("Portal 2", "ASASASAS", "ASASSAS");
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
 		
-		//prvky searchu su snad nainjektovane
+		search_res.getItems().clear();
+		if(radio_game.isSelected() && !radio_project.isSelected()) {
+			search_res.getItems().addAll(fetcher.getOfficialGameNamesByFiltration(formatSearchParameters(), Double.parseDouble(PropertyManager.getProps().getProperty("high_rank"))));
+		}
 		
-		if(radio_project.isSelected())
-			System.out.println("AA");
+		else if(!radio_game.isSelected() && radio_project.isSelected()) {
+			search_res.getItems().addAll(fetcher.getDeveloperGameNamesByFiltration(formatSearchParameters(), Double.parseDouble(PropertyManager.getProps().getProperty("high_rank"))));
+		}
+		
+		else {
+			search_res.getItems().addAll(fetcher.getGameNamesByFiltration(formatSearchParameters(), Double.parseDouble(PropertyManager.getProps().getProperty("high_rank"))));
+		}
 		
 		search_res_label.setVisible(true);
 		search_res.setVisible(true);
@@ -445,11 +439,9 @@ public class Controller implements Initializable {
 	
 	
 	public void openFoundGame() throws NamingException {   //TODO
-		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
-		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+		FetcherBeanRemote fetcher = EJBControl.getFetcher();
 		
-		tab_gpController.setDisplayedGame(fetcher.getGameByName(search_res.getSelectionModel().getSelectedItem()));
-		tab_gpController.populate(false);
+		tab_gpController.populate(fetcher.getGameByName(search_res.getSelectionModel().getSelectedItem()));
     	tabs.getSelectionModel().selectNext();
 	}
 	

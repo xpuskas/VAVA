@@ -7,7 +7,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 public class EJBContext {
-
 	/**
 	 * Vytvorenie kontextu pre spojenie sa s JBoss aplikacnym serverom
 	 * @param host
