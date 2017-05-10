@@ -18,12 +18,12 @@
                           <items>
                               <VBox alignment="TOP_CENTER">
                                  <children>
-                                    <Label text="Games I added">
+                                    <Label fx:id="bymeadded_l" text="Games I added">
                                        <font>
                                           <Font size="24.0" />
                                        </font>
                                     </Label>
-                                    <TableView fx:id="table" prefHeight="237.0" prefWidth="409.0" VBox.vgrow="ALWAYS">
+                                    <TableView fx:id="table" onMouseClicked="#showGameProfile" prefHeight="237.0" prefWidth="409.0" VBox.vgrow="ALWAYS">
                                       <columns>
                                         <TableColumn fx:id="t_title" prefWidth="75.0" text="Title" />
                                         <TableColumn fx:id="t_genre" prefWidth="75.0" text="Genre" />
@@ -37,25 +37,25 @@
                               </VBox>
                               <VBox alignment="TOP_CENTER">
                                  <children>
-                                    <Label text="My projects">
+                                    <Label fx:id="myprojects_l" text="My projects">
                                        <font>
                                           <Font size="24.0" />
                                        </font>
                                     </Label>
-                                    <ListView fx:id="projects" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                                    <ListView fx:id="projects" onMouseClicked="#showProjectProfile" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                                  </children>
                               </VBox>
                           </items>
                         </SplitPane>
                         <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
                           <tabs>
-                            <Tab text="Add new game">
+                            <Tab fx:id="addgame_t" text="Add new game">
                                  <content>
                                     <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                                        <children>
                                           <HBox spacing="7.0">
                                              <children>
-                                                <Label text="Title:">
+                                                <Label fx:id="g_title_l" text="Title:">
                                                    <HBox.margin>
                                                       <Insets right="8.0" />
                                                    </HBox.margin></Label>
@@ -67,7 +67,7 @@
                                           </HBox>
                                           <HBox layoutX="10.0" layoutY="10.0" spacing="7.0">
                                              <children>
-                                                <Label text="Genre:">
+                                                <Label fx:id="g_genre_l" text="Genre:">
                                                    <padding>
                                                       <Insets right="1.0" />
                                                    </padding></Label>
@@ -82,7 +82,7 @@
                                           </HBox>
                                           <HBox layoutX="10.0" layoutY="10.0" spacing="7.0">
                                              <children>
-                                                <Label text="Studio:" />
+                                                <Label fx:id="g_studio_l" text="Studio:" />
                                                 <TextField fx:id="studio" prefHeight="25.0" prefWidth="226.0" promptText="Type title of studio here" />
                                              </children>
                                              <VBox.margin>
@@ -91,25 +91,25 @@
                                           </HBox>
                                           <HBox layoutX="10.0" layoutY="35.0" spacing="7.0">
                                              <children>
-                                                <Label text="Year of release:" />
+                                                <Label fx:id="g_year_l" text="Year of release:" />
                                                 <ComboBox fx:id="year_game" prefWidth="70.0" promptText="2017" />
                                              </children>
                                              <VBox.margin>
                                                 <Insets left="5.0" />
                                              </VBox.margin>
                                           </HBox>
-                                          <Label text="Description:">
+                                          <Label fx:id="g_desc_l" text="Description:">
                                              <VBox.margin>
                                                 <Insets left="5.0" />
                                              </VBox.margin></Label>
-                                          <TextArea fx:id="desc_game" prefHeight="200.0" prefWidth="200.0">
+                                          <TextArea fx:id="desc_game" prefHeight="200.0" prefWidth="200.0" wrapText="true">
                                              <VBox.margin>
                                                 <Insets left="5.0" right="5.0" />
                                              </VBox.margin></TextArea>
                                           <HBox layoutX="10.0" layoutY="85.0" spacing="7.0">
                                              <children>
-                                                <Label text="Upload cover image" />
-                                                <Button mnemonicParsing="false" onAction="#uploadImage" text="Choose file..." />
+                                                <Label fx:id="g_up_l" text="Upload cover image" />
+                                                <Button fx:id="g_up_b" mnemonicParsing="false" onAction="#uploadImage" text="Choose file..." />
                                              </children>
                                              <padding>
                                                 <Insets left="5.0" />
@@ -117,7 +117,7 @@
                                           </HBox>
                                           <HBox alignment="CENTER">
                                              <children>
-                                                <Button mnemonicParsing="false" onAction="#submitGame" text="Submit">
+                                                <Button fx:id="g_sub_b" mnemonicParsing="false" onAction="#submitGame" text="Submit">
                                                    <font>
                                                       <Font size="18.0" />
                                                    </font>
@@ -134,13 +134,13 @@
                                     </VBox>
                                  </content>
                             </Tab>
-                            <Tab text="Add new project">
+                            <Tab fx:id="addproject_t" text="Add new project">
                                  <content>
                                     <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                                        <children>
                                           <HBox spacing="7.0">
                                              <children>
-                                                <Label text="Title:">
+                                                <Label fx:id="p_title_l" text="Title:">
                                                    <HBox.margin>
                                                       <Insets right="8.0" />
                                                    </HBox.margin></Label>
@@ -152,7 +152,7 @@
                                           </HBox>
                                           <HBox spacing="7.0">
                                              <children>
-                                                <Label text="Genre:" />
+                                                <Label fx:id="p_genre_l" text="Genre:" />
                                                 <ComboBox fx:id="genre_project" prefWidth="150.0" promptText="Action/Adventure..." />
                                              </children>
                                              <VBox.margin>
@@ -161,14 +161,14 @@
                                           </HBox>
                                           <HBox spacing="7.0">
                                              <children>
-                                                <Label text="Year of release:" />
+                                                <Label fx:id="p_year_l" text="Year of release:" />
                                                 <ComboBox fx:id="year_project" prefWidth="70.0" promptText="2017" />
                                              </children>
                                              <VBox.margin>
                                                 <Insets left="5.0" />
                                              </VBox.margin>
                                           </HBox>
-                                          <Label text="Description:">
+                                          <Label fx:id="p_desc_l" text="Description:">
                                              <VBox.margin>
                                                 <Insets left="5.0" />
                                              </VBox.margin></Label>
@@ -178,8 +178,8 @@
                                              </VBox.margin></TextArea>
                                           <HBox spacing="10.0">
                                              <children>
-                                                <Label text="Upload cover image" />
-                                                <Button mnemonicParsing="false" onAction="#uploadProjectImage" text="Choose file..." />
+                                                <Label fx:id="p_up_l" text="Upload cover image" />
+                                                <Button fx:id="p_up_b" mnemonicParsing="false" onAction="#uploadProjectImage" text="Choose file..." />
                                              </children>
                                              <VBox.margin>
                                                 <Insets left="5.0" />
@@ -187,7 +187,7 @@
                                           </HBox>
                                           <HBox alignment="CENTER">
                                              <children>
-                                                <Button mnemonicParsing="false" onAction="#submitProject" text="Submit">
+                                                <Button fx:id="p_sub_b" mnemonicParsing="false" onAction="#submitProject" text="Submit">
                                                    <font>
                                                       <Font size="18.0" />
                                                    </font>

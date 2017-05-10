@@ -18,14 +18,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
+import language.LanguageManager;
 import model.DeveloperGame;
 import model.Genre;
 import model.OfficialGame;
@@ -63,8 +68,52 @@ public class MyGamesController implements Initializable {
 	@FXML
 	TextArea desc_project;
 	
+	@FXML
+	Label bymeadded_l;
+	@FXML
+	Label myprojects_l;
+	@FXML
+	Tab addgame_t;
+	@FXML
+	Tab addproject_t;
+	@FXML
+	Label g_title_l;
+	@FXML
+	Label g_genre_l;
+	@FXML
+	Label g_studio_l;
+	@FXML
+	Label g_year_l;
+	@FXML
+	Label g_desc_l;
+	@FXML
+	Label g_up_l;
+	@FXML
+	Button g_up_b;
+	@FXML 
+	Button g_sub_b;
+	@FXML
+	Label p_title_l;
+	@FXML
+	Label p_genre_l;
+	@FXML
+	Label p_year_l;
+	@FXML
+	Label p_desc_l;
+	@FXML
+	Label p_up_l;
+	@FXML
+	Button p_up_b;
+	@FXML 
+	Button p_sub_b;
+	
+	
+	
+	
 	private File file = null;
 	private File file_project = null;
+	private GameProfileController gp_controller;
+	private TabPane tabs;
 	
 	private int current_year;
 	
@@ -105,6 +154,45 @@ public class MyGamesController implements Initializable {
 
 		refreshOfficialGames(fetcher);
 		refreshDeveloperGames(fetcher);
+		
+		refreshLanguageTexts();
+	}
+	
+	//Ked sa zmeni jazyk, tak treba nad kazdym controllerom zavolat takuto metodu - teda nad kazdym, kde je co menit
+	public void setLanguage(String language) {
+		LanguageManager.setLanguage(language);
+		refreshLanguageTexts();
+	}
+	
+	public void refreshLanguageTexts() {
+		bymeadded_l.setText(LanguageManager.getProperty("MYGAMES_BYMEADDED"));
+		myprojects_l.setText(LanguageManager.getProperty("MYGAMES_MYPROJECTS"));
+		addgame_t.setText(LanguageManager.getProperty("MYGAMES_ADDGAME"));
+		addproject_t.setText(LanguageManager.getProperty("MYGAMES_ADDPROJECT"));
+		g_title_l.setText(LanguageManager.getProperty("MYGAMES_GAMETITLE"));
+		g_genre_l.setText(LanguageManager.getProperty("MYGAMES_GAMEGENRE"));
+		g_studio_l.setText(LanguageManager.getProperty("MYGAMES_GAMESTUDIO"));
+		g_year_l.setText(LanguageManager.getProperty("MYGAMES_GAMEYEAR"));
+		g_desc_l.setText(LanguageManager.getProperty("MYGAMES_GAMEDESC"));
+		g_up_l.setText(LanguageManager.getProperty("MYGAMES_GAMEUPLOAD"));
+		g_up_b.setText(LanguageManager.getProperty("MYGAMES_GAMECHOOSE"));
+		g_sub_b.setText(LanguageManager.getProperty("MYGAMES_GAMESUBMIT"));
+		p_title_l.setText(LanguageManager.getProperty("MYGAMES_GAMETITLE"));
+		p_genre_l.setText(LanguageManager.getProperty("MYGAMES_GAMEGENRE"));
+		p_year_l.setText(LanguageManager.getProperty("MYGAMES_GAMEYEAR"));
+		p_desc_l.setText(LanguageManager.getProperty("MYGAMES_GAMEDESC"));
+		p_up_l.setText(LanguageManager.getProperty("MYGAMES_GAMEUPLOAD"));
+		p_up_b.setText(LanguageManager.getProperty("MYGAMES_GAMECHOOSE"));
+		p_sub_b.setText(LanguageManager.getProperty("MYGAMES_GAMESUBMIT"));
+		title_game.setPromptText(LanguageManager.getProperty("MYGAMES_GAMETITLEPROMPT"));
+		studio.setPromptText(LanguageManager.getProperty("MYGAMES_GAMESTUDIOPROMPT"));
+		title_project.setPromptText(LanguageManager.getProperty("MYGAMES_PROJECTTITLEPROMPT"));
+		genre_game.setPromptText(LanguageManager.getProperty("MYGAMES_GAMEGENREPROMPT"));
+		genre_project.setPromptText(LanguageManager.getProperty("MYGAMES_GAMEGENREPROMPT"));
+		t_title.setText(LanguageManager.getProperty("MYGAMES_GAMETITLE"));
+		t_genre.setText(LanguageManager.getProperty("MYGAMES_GAMEGENRE"));
+		t_studio.setText(LanguageManager.getProperty("MYGAMES_GAMESTUDIO"));
+
 	}
 	
 	
@@ -124,9 +212,34 @@ public class MyGamesController implements Initializable {
 	}
 	
 	
+	public void setGPController(GameProfileController gp) {
+		this.gp_controller = gp;
+	}
+	
+	
+	public void setTabs(TabPane tab) {
+		this.tabs = tab;
+	}
+	
+	
 	private void refreshDeveloperGames(FetcherBeanRemote fetcher) {
 		List<String> gamesAuthored = fetcher.getDeveloperGameNamesAddedByUser(Main.getUserName());
 		projects.getItems().addAll(gamesAuthored);
+	}
+	
+	
+	public void showProjectProfile() throws NamingException {
+		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
+		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+		
+		try {
+			gp_controller.setDisplayedGame(fetcher.getGameByName(projects.getSelectionModel().getSelectedItem()));
+			gp_controller.populate(true);
+			tabs.getSelectionModel().select(1);
+		} catch(Exception e) {
+			System.out.println("No projects here");
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -199,6 +312,22 @@ public class MyGamesController implements Initializable {
 			System.out.println(file_project.getName());
 		}*/
 	}
+	
+	
+	public void showGameProfile() throws NamingException {
+		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
+		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+		
+		try {
+			gp_controller.setDisplayedGame(fetcher.getGameByName(table.getSelectionModel().getSelectedItem().getTitle()));
+			gp_controller.populate(false);
+			tabs.getSelectionModel().select(1);
+		} catch(NullPointerException e) {
+			System.out.println("Hey, add some games");
+			e.printStackTrace();
+		}
+	}  
+	
 	
 	public void uploadImage() throws IOException, NamingException {
 		FileChooser fc = new FileChooser();

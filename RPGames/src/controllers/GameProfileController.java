@@ -34,6 +34,7 @@ import fetcher.FetcherBeanRemote;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
@@ -45,6 +46,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
+import language.LanguageManager;
 import model.Article;
 import model.Comment;
 import model.Game;
@@ -129,9 +131,40 @@ public class GameProfileController implements Initializable {
 	TextArea comment;
 	@FXML
 	ListView<String> articles;
-
+	@FXML
+	ListView<String> reviews;
+	@FXML
+	Label studio_label;
+	
+	@FXML
+	Label genre_l;
+	@FXML
+	Label year_l;
+	@FXML
+	Label desc_l;
+	@FXML
+	Label avg_l;
+	@FXML
+	Label my_l;
+	@FXML
+	Button rank_b;
+	@FXML
+	Button addrev_b;
+	@FXML
+	Button addart_b;
+	@FXML
+	Button upload_b;
+	@FXML
+	Label comments_l;
+	@FXML
+	Button post_b;
+	@FXML
+	Label rev_l;
+	@FXML
+	Label art_l;
 	
 	private ShowReviewController tab_srvController;
+	private ShowArticleController tab_sarController;
 
 	
 	private List<ImageView> user_photos;
@@ -221,11 +254,17 @@ public class GameProfileController implements Initializable {
 		t5.setText("This is awesome!");
 		
 		handleLists(false);
+		refreshLanguageTexts();
 	}
 	
 	
-	public void setController(ShowReviewController src) {
+	public void setReviewController(ShowReviewController src) {
 		this.tab_srvController = src;
+	}
+	
+	
+	public void setArticleController(ShowArticleController art) {
+		this.tab_sarController = art;
 	}
 	
 	
@@ -233,7 +272,38 @@ public class GameProfileController implements Initializable {
 		this.tabs = tab;
 	}
 	
-	public void populate() throws NamingException {
+	//Ked sa zmeni jazyk, tak treba nad kazdym controllerom zavolat takuto metodu - teda nad kazdym, kde je co menit
+	public void setLanguage(String language) {
+		LanguageManager.setLanguage(language);
+		refreshLanguageTexts();
+	}
+	
+	public void refreshLanguageTexts() {
+		posted_on1.setText(LanguageManager.getProperty("GAMEPROFILE_POSTEDON1"));
+		posted_on2.setText(LanguageManager.getProperty("GAMEPROFILE_POSTEDON2"));
+		posted_on3.setText(LanguageManager.getProperty("GAMEPROFILE_POSTEDON3"));
+		posted_on4.setText(LanguageManager.getProperty("GAMEPROFILE_POSTEDON4"));
+		posted_on5.setText(LanguageManager.getProperty("GAMEPROFILE_POSTEDON5"));
+		studio_label.setText(LanguageManager.getProperty("GAMEPROFILE_STUDIO"));
+		genre_l.setText(LanguageManager.getProperty("GAMEPROFILE_GENRE"));
+		year_l.setText(LanguageManager.getProperty("GAMEPROFILE_YEAR"));
+		desc_l.setText(LanguageManager.getProperty("GAMEPROFILE_DESC"));
+		avg_l.setText(LanguageManager.getProperty("GAMEPROFILE_AVGRANK"));
+		my_l.setText(LanguageManager.getProperty("GAMEPROFILE_MYRANK"));
+		rank_b.setText(LanguageManager.getProperty("GAMEPROFILE_RANKBUT"));
+		addrev_b.setText(LanguageManager.getProperty("GAMEPROFILE_ADDREVBUT"));
+		addart_b.setText(LanguageManager.getProperty("GAMEPROFILE_ADDARTBUT"));
+		upload_b.setText(LanguageManager.getProperty("GAMEPROFILE_UPLOADBUT"));
+		comments_l.setText(LanguageManager.getProperty("GAMEPROFILE_COMMENTS"));
+		post_b.setText(LanguageManager.getProperty("GAMEPROFILE_POSTBUT"));
+		rev_l.setText(LanguageManager.getProperty("GAMEPROFILE_REVIEWS"));
+		art_l.setText(LanguageManager.getProperty("GAMEPROFILE_ARTICLES"));
+		
+	}
+	
+	
+	
+	public void populate(boolean isProject) throws NamingException {
 		
 		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
 		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
@@ -245,42 +315,19 @@ public class GameProfileController implements Initializable {
 		genre.setText(displayedGame.getGenre().getName());
 		year.setText(((Short)displayedGame.getReleaseYear()).toString());
 		
-		studio.setText(fetcher.getOfficialGameByName(displayedGame.getName()).getStudio()); //TODO
-		visualiseRatings(((Double)fetcher.getAverageRankingOfGame(displayedGame)), (fetcher.getRankingOfGameByUserAndGame(displayedGame.getName(), Main.getUserName())));
-
-		
-	/*	if(fetcher.getAverageRankingOfGame(displayedGame) < 0) {
-			rank_avg.setText("N/A");
+		if(isProject) {
+			studio_label.setText("Author:");
+			studio.setText(fetcher.getDeveloperGameByName(displayedGame.getName()).getAuthor().getName());
 		}
 		
 		else {
-			rank_avg.setText(((Double)fetcher.getAverageRankingOfGame(displayedGame)).toString());
+			studio_label.setText("Studio:");
+			studio.setText(fetcher.getOfficialGameByName(displayedGame.getName()).getStudio());
 		}
-				
-		rank_my.setText(((Double)fetcher.getRankingOfGameByUserAndGame(displayedGame.getName(), Main.getUserName())).toString());  */
 		
-		
-	//	Game game = fetcher.getGameByName(displayedGame.getName());   //RATINGY!!!!!!!!!!!!!!!!!
-	//	System.out.println(fetcher.getAverageRankingOfGame(displayedGame));
-		
-	//	displayedGame.getComments().size();
+		visualiseRatings(((Double)fetcher.getAverageRankingOfGame(displayedGame)), (fetcher.getRankingOfGameByUserAndGame(displayedGame.getName(), Main.getUserName())));
 		
 		desc.setText(displayedGame.getDescription());
-		
-	/*	Image def = new Image("file:foto.jpg");
-
-		screenshots = fetcher.getPagedScreenshotsForGame(displayedGame, 5, 0);  //WARNING
-		if(screenshots.size() > 0) {
-			cover.setImage(Utility.byte2Image(screenshots.get(screenshots.size() - 1).getScreenshot()));
-		}
-		
-		for(int i = 0; i < screenshots.size(); i++) {
-			screenshot_holders.get(i).setImage(Utility.byte2Image(screenshots.get(i).getScreenshot()));
-		}
-		
-		for(int i = screenshots.size(); i < 5; i++) {
-			screenshot_holders.get(i).setImage(def);   
-		}   */
 		
 		visualiseComments(loadComments());
 		visualiseScreenshots(loadScreenshots());
@@ -301,23 +348,23 @@ public class GameProfileController implements Initializable {
 		}
 		
 		//TODO Lukas was here - generovanie toho, že si niekto zobrazil hru
-		ViewGameByUser viewRecord = new ViewGameByUser();
-		viewRecord.setGame(displayedGame);
-		viewRecord.setViewed(new Date());
-		viewRecord.setViewer(fetcher.getUserAccountByName(Main.getUserName()));
-		updater.addVGBU(viewRecord);
-		
-		Controller.refreshLastViewedGames(fetcher);
+		if(!isProject) {
+			ViewGameByUser viewRecord = new ViewGameByUser();
+			viewRecord.setGame(displayedGame);
+			viewRecord.setViewed(new Date());
+			viewRecord.setViewer(fetcher.getUserAccountByName(Main.getUserName()));
+			updater.addVGBU(viewRecord);
+			
+			Controller.refreshLastViewedGames(fetcher);
+		}
 		
 		articles.getItems().clear();
 	    articles.getItems().addAll(fetcher.reviewNamesByGame(displayedGame));
-	//	List<String> articles = fetcher.articleNamesByGame(displayedGame);
-		
-	//	System.out.println(fetcher.reviewNamesByGame(displayedGame).size());
-		
-	//	fetcher.articleNamesByGame(fetcher.getGameByName("Half-Life"));
-		
-	//	articles.getItems().add("Behold the king of all first-person shooters!");
+	    
+	    reviews.getItems().clear();
+	    reviews.getItems().addAll(fetcher.articleNamesByGame(displayedGame));
+	    
+	  
 	}
 	
 	
@@ -328,6 +375,16 @@ public class GameProfileController implements Initializable {
 		tab_srvController.setDisplayedReview(fetcher.getReviewByTitle(articles.getSelectionModel().getSelectedItem()));
 		tab_srvController.populate();
 		tabs.getSelectionModel().select(3);
+	}
+	
+	
+	public void showGameArticle() throws NamingException {
+		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
+		FetcherBeanRemote fetcher = (FetcherBeanRemote)context.lookup("ejb:/EJB3//FetcherBean!fetcher.FetcherBeanRemote");
+		
+		tab_sarController.setDispplayedArticle(fetcher.getArticleByTitle(reviews.getSelectionModel().getSelectedItem()));
+		tab_sarController.populate();
+		tabs.getSelectionModel().select(4);
 	}
 	
 	
@@ -385,7 +442,7 @@ public class GameProfileController implements Initializable {
 	
 	public void addArticle() throws IOException {
 	   	Main main = new Main();
-    	main.showAddArticleDialog();
+    	main.showAddArticleDialog(displayedGame);
 	}
 	
 	
@@ -411,7 +468,7 @@ public class GameProfileController implements Initializable {
 			
 			updater.addScreenshot(screen);
 			
-			
+			visualiseScreenshots(loadScreenshots());
 		}
 	}
 	

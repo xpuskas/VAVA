@@ -16,11 +16,14 @@ import application.EJBContext;
 import fetcher.FetcherBeanRemote;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import language.LanguageManager;
 import model.Game;
 import model.Review;
 import updater.UpdaterBeanRemote;
@@ -51,6 +54,19 @@ public class AddReviewController implements Initializable {
 	@FXML
 	TextArea text;
 	
+	@FXML
+	Label title_l;
+	@FXML
+	Label pros_l;
+	@FXML
+	Label cons_l;
+	@FXML
+	Label rank_l;
+	@FXML
+	Button submit_b;
+	@FXML
+	Button upload_l;
+	
 	private Stage stage;
 	private List<TextField> pros;
 	private List <TextField> cons;
@@ -71,6 +87,8 @@ public class AddReviewController implements Initializable {
 		cons.add(con2);
 		cons.add(con3);
 		cons.add(con4);	
+		
+		refreshLanguageTexts();
 	}
 	
 	
@@ -82,6 +100,23 @@ public class AddReviewController implements Initializable {
 		this.reviewedGame = game;
 	}
 	
+	
+	//Ked sa zmeni jazyk, tak treba nad kazdym controllerom zavolat takuto metodu - teda nad kazdym, kde je co menit
+	public void setLanguage(String language) {
+		LanguageManager.setLanguage(language);
+		refreshLanguageTexts();
+	}
+	
+	public void refreshLanguageTexts() {
+		title.setPromptText(LanguageManager.getProperty("ADDREVIEW_TITLEPROMPT"));
+		title_l.setText(LanguageManager.getProperty("ADDREVIEW_TITLE"));
+		pros_l.setText(LanguageManager.getProperty("ADDREVIEW_PROS"));
+		cons_l.setText(LanguageManager.getProperty("ADDREVIEW_CONS"));
+		upload_l.setText(LanguageManager.getProperty("ADDREVIEW_UPLOADBUT"));
+		submit_b.setText(LanguageManager.getProperty("ADDREVIEW_SUBMITBUT"));
+		rank_l.setText(LanguageManager.getProperty("ADDREVIEW_RANK"));
+
+	}
 	
 	public void addReview() throws NamingException, IOException {
 		Context context = EJBContext.createRemoteEjbContext("localhost", "8080");
@@ -136,7 +171,7 @@ public class AddReviewController implements Initializable {
 		StringBuilder sb = new StringBuilder();
 		
 		for(TextField con: cons) {
-			if(!con.getText().equals("")) {
+			if(!con.getText().equals("")) {   //TODO
 				sb.append(con.getText());
 				sb.append("|");
 			}
