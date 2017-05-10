@@ -16,14 +16,9 @@
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
-          <Menu mnemonicParsing="false" text="Profile">
+          <Menu fx:id="profile" mnemonicParsing="false" text="Profile">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem fx:id="cl" mnemonicParsing="false" text="Close" />
             </items>
           </Menu>
         </menus>
@@ -32,13 +27,13 @@
    <center>
       <TabPane fx:id="tabs" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" tabMinWidth="120.0" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab text="Home">
+          <Tab fx:id="home" text="Home">
                <content>
                   <BorderPane prefHeight="200.0" prefWidth="200.0">
                      <right>
                         <VBox alignment="TOP_CENTER" spacing="10.0">
                            <children>
-                              <Label text="Search">
+                              <Label fx:id="search_l" text="Search">
                                  <font>
                                     <Font size="20.0" />
                                  </font>
@@ -47,6 +42,12 @@
                               <ComboBox fx:id="genre" prefWidth="150.0" promptText="Genre" />
                               <TextField fx:id="studio" promptText="Studio" />
                               <ComboBox fx:id="year" prefWidth="150.0" promptText="Year of release" />
+                              <HBox spacing="20.0">
+                                 <children>
+                                    <RadioButton fx:id="radio_game" mnemonicParsing="false" text="game" />
+                                    <RadioButton fx:id="radio_project" mnemonicParsing="false" text="project" />
+                                 </children>
+                              </HBox>
                               <HBox>
                                  <children>
                                     <CheckBox fx:id="high_ranked" mnemonicParsing="false" text="high ranked">
@@ -58,7 +59,7 @@
                               </HBox>
                               <HBox alignment="CENTER">
                                  <children>
-                                    <Button mnemonicParsing="false" text="Search" />
+                                    <Button fx:id="searchbut" mnemonicParsing="false" onAction="#search" text="Search" />
                                  </children>
                               </HBox>
                            </children>
@@ -73,93 +74,114 @@
                      <center>
                         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefViewportHeight="436.0" prefViewportWidth="920.0" BorderPane.alignment="TOP_CENTER">
                            <content>
-                              <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
+                              <VBox>
                                  <children>
-                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="160.0" spacing="100.0" HBox.hgrow="ALWAYS">
+                                    <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
                                        <children>
-                                          <VBox alignment="TOP_CENTER">
+                                          <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="160.0" spacing="100.0" HBox.hgrow="ALWAYS">
                                              <children>
-                                                <ImageView fx:id="image1" fitHeight="135.0" fitWidth="180.0" onMouseClicked="#handleImage1Click" pickOnBounds="true" preserveRatio="true" />
-                                                <Label fx:id="label1" onMouseClicked="#handleLabel1Click" text="Label">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                </Label>
+                                                <VBox alignment="TOP_CENTER">
+                                                   <children>
+                                                      <ImageView fx:id="image1" fitHeight="135.0" fitWidth="180.0" onMouseClicked="#handleImage1Click" pickOnBounds="true" preserveRatio="true" />
+                                                      <Label fx:id="label1" onMouseClicked="#handleLabel1Click" text="Label">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </VBox>
+                                                <VBox alignment="TOP_CENTER">
+                                                   <children>
+                                                      <ImageView fx:id="image2" fitHeight="135.0" fitWidth="180.0" onMouseClicked="#handleImage2Click" pickOnBounds="true" preserveRatio="true">
+                                                         <VBox.margin>
+                                                            <Insets top="5.0" />
+                                                         </VBox.margin>
+                                                      </ImageView>
+                                                      <Label fx:id="label2" onMouseClicked="#handleLabel2Click" text="Label">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </VBox>
                                              </children>
-                                          </VBox>
-                                          <VBox alignment="TOP_CENTER">
-                                             <children>
-                                                <ImageView fx:id="image2" fitHeight="135.0" fitWidth="180.0" onMouseClicked="#handleImage2Click" pickOnBounds="true" preserveRatio="true">
-                                                   <VBox.margin>
-                                                      <Insets top="5.0" />
-                                                   </VBox.margin>
-                                                </ImageView>
-                                                <Label fx:id="label2" onMouseClicked="#handleLabel2Click" text="Label">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                </Label>
-                                             </children>
-                                          </VBox>
-                                       </children>
-                                       <HBox.margin>
-                                          <Insets top="10.0" />
-                                       </HBox.margin>
-                                    </VBox>
-                                    <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
-                                       <children>
-                                          <ImageView fx:id="imageBig" fitHeight="288.0" fitWidth="512.0" pickOnBounds="true" preserveRatio="true" />
-                                          <Label fx:id="labelBig" onMouseClicked="#handleLabelBigClick" text="Label">
-                                             <font>
-                                                <Font name="System Bold" size="16.0" />
-                                             </font>
-                                          </Label>
-                                          <Text fx:id="desc" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="JUSTIFY" wrappingWidth="421.13671875" VBox.vgrow="ALWAYS">
-                                             <VBox.margin>
+                                             <HBox.margin>
                                                 <Insets top="10.0" />
-                                             </VBox.margin>
-                                          </Text>
-                                       </children>
-                                       <HBox.margin>
-                                          <Insets top="35.0" />
-                                       </HBox.margin>
-                                    </VBox>
-                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="160.0" spacing="100.0" HBox.hgrow="ALWAYS">
-                                       <children>
-                                          <VBox alignment="TOP_CENTER">
+                                             </HBox.margin>
+                                          </VBox>
+                                          <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
                                              <children>
-                                                <ImageView fx:id="image3" fitHeight="135.0" fitWidth="180.0" onMouseClicked="#handleImage3Click" pickOnBounds="true" preserveRatio="true" />
-                                                <Label fx:id="label3" onMouseClicked="#handleLabel3Click" text="Label">
+                                                <ImageView fx:id="imageBig" fitHeight="288.0" fitWidth="512.0" pickOnBounds="true" preserveRatio="true" />
+                                                <Label fx:id="labelBig" onMouseClicked="#handleLabelBigClick" text="Label">
                                                    <font>
-                                                      <Font size="14.0" />
+                                                      <Font name="System Bold" size="16.0" />
                                                    </font>
                                                 </Label>
-                                             </children>
-                                          </VBox>
-                                          <VBox alignment="TOP_CENTER">
-                                             <children>
-                                                <ImageView fx:id="image4" fitHeight="135.0" fitWidth="180.0" layoutX="10.0" layoutY="10.0" onMouseClicked="#handleImage4Click" pickOnBounds="true" preserveRatio="true">
+                                                <Text fx:id="desc" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="JUSTIFY" wrappingWidth="421.13671875" VBox.vgrow="ALWAYS">
                                                    <VBox.margin>
-                                                      <Insets top="5.0" />
+                                                      <Insets top="10.0" />
                                                    </VBox.margin>
-                                                </ImageView>
-                                                <Label fx:id="label4" onMouseClicked="#handleLabel4Click" text="Label">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                </Label>
+                                                </Text>
                                              </children>
+                                             <HBox.margin>
+                                                <Insets top="35.0" />
+                                             </HBox.margin>
+                                          </VBox>
+                                          <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="160.0" spacing="100.0" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <VBox alignment="TOP_CENTER">
+                                                   <children>
+                                                      <ImageView fx:id="image3" fitHeight="135.0" fitWidth="180.0" onMouseClicked="#handleImage3Click" pickOnBounds="true" preserveRatio="true" />
+                                                      <Label fx:id="label3" onMouseClicked="#handleLabel3Click" text="Label">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </VBox>
+                                                <VBox alignment="TOP_CENTER">
+                                                   <children>
+                                                      <ImageView fx:id="image4" fitHeight="135.0" fitWidth="180.0" layoutX="10.0" layoutY="10.0" onMouseClicked="#handleImage4Click" pickOnBounds="true" preserveRatio="true">
+                                                         <VBox.margin>
+                                                            <Insets top="5.0" />
+                                                         </VBox.margin>
+                                                      </ImageView>
+                                                      <Label fx:id="label4" onMouseClicked="#handleLabel4Click" text="Label">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                             <HBox.margin>
+                                                <Insets top="10.0" />
+                                             </HBox.margin>
+                                             <padding>
+                                                <Insets right="5.0" />
+                                             </padding>
                                           </VBox>
                                        </children>
-                                       <HBox.margin>
+                                    </HBox>
+                                    <HBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label fx:id="search_res_label" text="Search results">
+                                             <font>
+                                                <Font size="20.0" />
+                                             </font>
+                                             <HBox.margin>
+                                                <Insets top="10.0" />
+                                             </HBox.margin>
+                                          </Label>
+                                       </children>
+                                    </HBox>
+                                    <ListView fx:id="search_res" onMouseClicked="#openFoundGame" prefHeight="500.0" prefWidth="200.0">
+                                       <VBox.margin>
                                           <Insets top="10.0" />
-                                       </HBox.margin>
-                                       <padding>
-                                          <Insets right="5.0" />
-                                       </padding>
-                                    </VBox>
+                                       </VBox.margin>
+                                    </ListView>
                                  </children>
-                              </HBox>
+                              </VBox>
                            </content>
                            <BorderPane.margin>
                               <Insets bottom="10.0" right="5.0" />
@@ -178,7 +200,7 @@
                                  <children>
                                     <VBox alignment="TOP_CENTER" layoutX="590.0" layoutY="10.0" prefHeight="595.0" prefWidth="443.0">
                                        <children>
-                                          <Label text="Game popularity by studio">
+                                          <Label fx:id="gpbs" text="Game popularity by studio">
                                              <font>
                                                 <Font size="24.0" />
                                              </font>
@@ -189,7 +211,7 @@
                                     <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                                     <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Label text="Game popularity by genre">
+                                          <Label fx:id="gpbg" text="Game popularity by genre">
                                              <font>
                                                 <Font size="24.0" />
                                              </font>
@@ -208,22 +230,22 @@
                   </BorderPane>
                </content>
           </Tab>
-          <Tab text="Game profile">
+          <Tab fx:id="gp" text="Game profile">
              <content>
                <fx:include fx:id="tab_gp" source="GameProfile.fxml" />
              </content>
           </Tab>
-            <Tab text="My games">
+            <Tab fx:id="mg" text="My games">
                <content>
 					<fx:include fx:id="tab_mg" source="MyGames.fxml" />
                </content>
             </Tab>
-            <Tab text="Fake - show review">
+            <Tab fx:id="gr" text="Game review">
                <content>
                 <fx:include fx:id="tab_srv" source="ShowReview.fxml" />
                </content>
                </Tab>
-            <Tab text="Fake - show article">
+            <Tab fx:id="ga" text="Game article">
                  <content>
                  <fx:include fx:id="tab_sar" source="ShowArticle.fxml" />
                </content>
@@ -235,7 +257,7 @@
    <left>
       <VBox alignment="TOP_CENTER">
          <children>
-            <Label text="Recent games">
+            <Label fx:id="recent_games_label" text="Recent games">
                <font>
                   <Font size="20.0" />
                </font>
@@ -243,7 +265,7 @@
                   <Insets />
                </VBox.margin>
             </Label>
-            <ListView fx:id="recent" prefHeight="549.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+            <ListView fx:id="recent" onMouseClicked="#showGameProfile" prefHeight="549.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
          </children>
          <BorderPane.margin>
             <Insets top="5.0" />

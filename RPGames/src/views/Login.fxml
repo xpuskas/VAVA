@@ -11,7 +11,7 @@
    <children>
       <HBox alignment="TOP_CENTER" spacing="6.0">
          <children>
-            <Label text="Username:">
+            <Label fx:id="username" text="Username:">
                <font>
                   <Font size="14.0" />
                </font>
@@ -24,7 +24,7 @@
       </HBox>
       <HBox alignment="TOP_CENTER" spacing="10.0">
          <children>
-            <Label layoutX="10.0" layoutY="10.0" text="Password:">
+            <Label fx:id="password" layoutX="10.0" layoutY="10.0" text="Password:">
                <font>
                   <Font size="14.0" />
                </font>
@@ -32,8 +32,8 @@
             <PasswordField fx:id="pass" promptText="Enter your password..." />
          </children>
       </HBox>
-      <Button mnemonicParsing="false" onAction="#signIN" text="Sign in" />
-      <Label text="Don't have an account yet? Create one now!">
+      <Button fx:id="sign_in" mnemonicParsing="false" onAction="#signIN" text="Sign in" />
+      <Label fx:id="new_account_encourage" text="Don't have an account yet? Create one now!">
          <font>
             <Font size="24.0" />
          </font>
@@ -45,7 +45,7 @@
          <children>
             <HBox layoutX="20.0" layoutY="20.0" spacing="8.0">
                <children>
-                  <Label text="Your username:">
+                  <Label fx:id="new_username" text="Your username:">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -57,7 +57,7 @@
       </HBox>
       <HBox alignment="TOP_CENTER" layoutX="20.0" layoutY="60.0" spacing="10.0">
          <children>
-            <Label layoutX="10.0" layoutY="10.0" text="Your password:">
+            <Label fx:id="new_password" layoutX="10.0" layoutY="10.0" text="Your password:">
                <font>
                   <Font size="14.0" />
                </font>
@@ -77,7 +77,7 @@
       </HBox>
       <HBox alignment="TOP_CENTER" spacing="10.0">
          <children>
-            <Label text="When were you born?">
+            <Label fx:id="birth_day" text="When were you born?">
                <font>
                   <Font size="14.0" />
                </font>
@@ -85,14 +85,19 @@
             <DatePicker fx:id="birth" prefHeight="25.0" prefWidth="189.0" promptText="Pick a date..." />
          </children>
       </HBox>
-      <Button mnemonicParsing="false" onAction="#uploadProfilePicture" text="Upload profile picture...">
+      <Button fx:id="upload_profile_pic" mnemonicParsing="false" onAction="#uploadProfilePicture" text="Upload profile picture...">
          <VBox.margin>
             <Insets bottom="5.0" left="100.0" />
          </VBox.margin>
       </Button>
-      <Button mnemonicParsing="false" onAction="#registerUser" text="Register!" />
+      <HBox alignment="CENTER_LEFT" spacing="187.0">
+         <children>
+            <ComboBox fx:id="language" prefHeight="25.0" prefWidth="103.0" promptText="language" />
+            <Button fx:id="register" mnemonicParsing="false" onAction="#registerUser" text="Register!" />
+         </children>
+         <padding>
+            <Insets left="10.0" />
+         </padding>
+      </HBox>
    </children>
-   <padding>
-      <Insets left="10.0" />
-   </padding>
 </VBox>

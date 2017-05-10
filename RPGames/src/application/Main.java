@@ -12,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import language.LanguageManager;
 import model.Game;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -34,7 +35,7 @@ public class Main extends Application {
 	LoginController lc = loader.getController();
 	lc.setStage(primaryStage);
 	
-    primaryStage.setTitle("RPGames v0.62 ALPHA");
+    primaryStage.setTitle("RPGames v0.75 BETA");
     primaryStage.setScene(new Scene(root, 640, 480));
 	primaryStage.setResizable(false);  //pevne rozmery
     primaryStage.show();  
@@ -56,11 +57,11 @@ public class Main extends Application {
     	Controller c = loader.getController();
     	c.setStage(dialog); 
     	
-    	dialog.setTitle("RPGames v0.62 ALPHA");
+    	dialog.setTitle("RPGames v0.75 BETA");
     	dialog.setScene(scena);
     	dialog.show();
     	
-    	
+    	LanguageManager.initialize();
     	
 	/*	Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
         primaryStage.setTitle("RPGames v0.05 PRE-ALPHA");
@@ -103,7 +104,7 @@ public class Main extends Application {
 	}
 	
 	
-	public void showAddArticleDialog() throws IOException {
+	public void showAddArticleDialog(Game game) throws IOException {
     	FXMLLoader loader = new FXMLLoader();
     	loader.setLocation(getClass().getResource("/views/AddArticle.fxml"));
     	Pane pane = (Pane) loader.load();
@@ -113,6 +114,7 @@ public class Main extends Application {
     	
     	AddArticleController aac = loader.getController();
     	aac.setStage(dialog);
+    	aac.setArticleedGame(game);
     	
     	dialog.setTitle("Add an article");
     	dialog.setScene(scena);

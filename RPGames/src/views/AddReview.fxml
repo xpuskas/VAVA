@@ -19,7 +19,7 @@
                      <children>
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                            <children>
-                              <Label text="Title:">
+                              <Label fx:id="title_l" text="Title:">
                                  <font>
                                     <Font size="24.0" />
                                  </font>
@@ -32,7 +32,7 @@
                         </HBox>
                         <HBox spacing="10.0">
                            <children>
-                              <Label text="Rank:">
+                              <Label fx:id="rank_l" text="Rank:">
                                  <font>
                                     <Font size="24.0" />
                                  </font>
@@ -45,7 +45,7 @@
                         </HBox>
                         <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="15.0" spacing="10.0">
                            <children>
-                              <Label text="Pros:">
+                              <Label fx:id="pros_l" text="Pros:">
                                  <font>
                                     <Font size="24.0" />
                                  </font>
@@ -54,7 +54,7 @@
                                  </HBox.margin>
                               </Label>
                               <Region prefHeight="25.0" prefWidth="113.0" HBox.hgrow="ALWAYS" />
-                              <Label layoutX="10.0" layoutY="10.0" text="Cons:">
+                              <Label fx:id="cons_l" layoutX="10.0" layoutY="10.0" text="Cons:">
                                  <font>
                                     <Font size="24.0" />
                                  </font>
@@ -104,15 +104,15 @@
                               <Insets right="57.0" />
                            </padding>
                         </HBox>
-                        <TextArea fx:id="text" prefHeight="236.0" prefWidth="809.0" promptText="Type your text here..." VBox.vgrow="ALWAYS">
+                        <TextArea fx:id="text" prefHeight="236.0" prefWidth="809.0" promptText="Type your text here..." wrapText="true" VBox.vgrow="ALWAYS">
                            <VBox.margin>
                               <Insets right="5.0" />
                            </VBox.margin>
                         </TextArea>
-                        <Button mnemonicParsing="false" onAction="#uploadImage" text="Upload cover photo" />
+                        <Button fx:id="upload_l" mnemonicParsing="false" onAction="#uploadImage" text="Upload cover photo" />
                         <HBox alignment="CENTER">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#addReview" text="SUBMIT">
+                              <Button fx:id="submit_b" mnemonicParsing="false" onAction="#addReview" text="SUBMIT">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
