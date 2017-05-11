@@ -2,7 +2,11 @@ package model;
 
 import java.io.Serializable;
 import java.util.Date;
-
+/**
+ * Model class instances of which can be persisted by server.
+ * An instance of this class represents an information about
+ * which games a user views.
+ */
 public class ViewGameByUser implements Serializable {
 	private long viewID;
 	private UserAccount viewer;

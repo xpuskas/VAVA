@@ -4,8 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-
+/**
+ * Model class instances of which can be persisted by server.
+ * An instance of this class represent one account of a user, which can be accessed
+ * via its login name and its password.
+ * Profile picture is optional, unless user specifies it, he is assigned a default picture.
+ */
 public class UserAccount implements Serializable {
 	private long userID;
 

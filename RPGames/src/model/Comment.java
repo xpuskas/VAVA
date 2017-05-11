@@ -2,7 +2,10 @@ package model;
 
 import java.io.Serializable;
 import java.util.Date;
-
+/**
+ * Model class instances of which can be persisted by server.
+ * Represents a chunk of text which a user typed below profile of a game.
+ */
 public class Comment implements Serializable {
 	private long commentID;
 	private UserAccount author;

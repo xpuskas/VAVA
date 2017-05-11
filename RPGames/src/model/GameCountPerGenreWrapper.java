@@ -2,6 +2,10 @@ package model;
 
 import java.io.Serializable;
 
+/**
+ * Wrapper class used for retrieving info about how many games are there which are
+ * of specified genre. Important for populating charts in "Home" tab of GUI.
+ */
 public class GameCountPerGenreWrapper implements Serializable{
 
 	private Genre genre;

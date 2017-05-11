@@ -1,5 +1,9 @@
 package model;
 
+/**
+ * Wrapper class used for retrieving specific info about instances of {@link model.OfficialGame}}
+ * class. To be used by a table in "MyGames" tab.
+ */
 public class OfficialGameWrapper {
 
 	String title;

@@ -2,7 +2,10 @@ package model;
 
 import java.io.Serializable;
 import java.util.Date;
-
+/**
+ * Model class instances of which can be persisted by server.
+ * Represents an article about a {@link model.Game} object.
+ */
 public class Article implements Serializable {
 	private long articleID;
 	private UserAccount author;

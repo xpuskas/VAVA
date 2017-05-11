@@ -4,6 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Model class instances of which can be persisted by server.
+ * Represents a genre of game. It is meant to be aggregated by {@link model.Game}.
+ * The same instance of this class should be used for all the games of this genre.
+ */
 public class Genre implements Serializable {
 	private int genreID;
 	private String name;

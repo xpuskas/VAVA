@@ -4,7 +4,11 @@ package model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Model class, which is a superclass to classes {@link model.DeveloperGame}
+ * and {@link model.OfficialGame}. Inheritance is important for displaying them
+ * in the same tables in graphical interface.
+ */
 public abstract class Game implements Serializable {
 	private long gameID;
 

@@ -2,7 +2,11 @@ package model;
 
 import java.io.Serializable;
 import java.util.Date;
-
+/**
+ * Model class instances of which can be persisted by server.
+ * Represents a game which can add any user. It is meant to be any existing
+ * game released by a game studio.
+ */
 public class OfficialGame extends Game implements Serializable {
 	
 	private String studio;

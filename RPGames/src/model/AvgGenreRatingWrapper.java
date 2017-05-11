@@ -1,7 +1,10 @@
 package model;
 
 import java.io.Serializable;
-
+/**
+ * Wrapper class used for retrieving info about average ranking of games
+ * of specified genre. Important for populating charts in "Home" tab of GUI.
+ */
 public class AvgGenreRatingWrapper implements Serializable{
 	private Genre genre;
 	private double value;
