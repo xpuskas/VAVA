@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane fx:id="border_p" prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.GameProfileController">
+                     <right>
+                        <VBox prefHeight="536.0" prefWidth="200.0">
+                           <BorderPane.margin>
+                              <Insets top="5.0" />
+                           </BorderPane.margin>
+                           <children>
+                              <HBox alignment="CENTER">
+                                 <children>
+                                    <Label fx:id="rev_l" text="Reviews">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </HBox>
+                              <ListView fx:id="articles" onMouseClicked="#showGameReview" VBox.vgrow="ALWAYS">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="5.0" right="5.0" />
+                                 </VBox.margin>
+                              </ListView>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0">
+               <children>
+                  <Label fx:id="art_l" text="Articles">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <ListView fx:id="reviews" layoutX="15.0" layoutY="40.0" onMouseClicked="#showGameArticle" />
+                           </children>
+                        </VBox>
+                     </right>
+                     <center>
+                        <ScrollPane fitToWidth="true" prefViewportHeight="546.0" prefViewportWidth="614.0">
+                           <content>
+                              <BorderPane BorderPane.alignment="CENTER">
+                                 <center>
+                  <HBox alignment="TOP_CENTER" spacing="5.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#prevScreenshots" text="&lt;&lt;" />
+                                          <ImageView fx:id="cover" fitHeight="405.0" fitWidth="720.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                                             <HBox.margin>
+                                                <Insets />
+                                             </HBox.margin>
+                                          </ImageView>
+                        <Button mnemonicParsing="false" onAction="#nextScreenshots" text="&gt;&gt;" />
+                     </children>
+                  </HBox>
+                                 </center>
+                                 <top>
+                                    <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" BorderPane.alignment="CENTER">
+                                       <BorderPane.margin>
+                                          <Insets left="5.0" right="5.0" top="10.0" />
+                                       </BorderPane.margin>
+                     <children>
+                        <ImageView fx:id="i1" fitHeight="90.0" fitWidth="160.0" onMouseClicked="#handleImage1Click" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="i2" fitHeight="90.0" fitWidth="160.0" layoutX="10.0" layoutY="10.0" onMouseClicked="#handleImage2Click" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="i3" fitHeight="90.0" fitWidth="160.0" layoutX="210.0" layoutY="10.0" onMouseClicked="#handleImage3Click" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="i4" fitHeight="90.0" fitWidth="160.0" layoutX="350.0" layoutY="10.0" onMouseClicked="#handleImage4Click" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="i5" fitHeight="90.0" fitWidth="160.0" layoutX="520.0" layoutY="10.0" onMouseClicked="#handleImage5Click" pickOnBounds="true" preserveRatio="true" />
+                     </children></HBox>
+                                 </top>
+                                 <bottom>
+                                    <VBox spacing="5.0">
+                                       <children>
+                                          <HBox alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <Label fx:id="title" text="Title" BorderPane.alignment="CENTER">
+                                                   <font>
+                                                      <Font size="36.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                                          <HBox spacing="7.0" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <Label fx:id="genre_l" layoutX="10.0" layoutY="10.0" text="Genre:">
+                                                   <font>
+                                                      <Font size="24.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="genre" layoutX="10.0" layoutY="10.0" text="genre">
+                                                   <font>
+                                                      <Font size="24.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                                          <HBox spacing="7.0" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <Label fx:id="studio_label" layoutX="10.0" layoutY="27.0" text="Studio:">
+                                                   <font>
+                                                      <Font size="24.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="studio" text="studio">
+                                                   <font>
+                                                      <Font size="24.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                                          <HBox spacing="7.0" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <Label fx:id="year_l" layoutX="10.0" layoutY="44.0" text="Year of release:">
+                                                   <font>
+                                                      <Font size="24.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="year" text="year">
+                                                   <font>
+                                                      <Font size="24.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                        <HBox alignment="TOP_CENTER">
+                           <children>
+                                                <Label fx:id="desc_l" layoutX="10.0" layoutY="78.0" text="Description">
+                                                   <font>
+                                                      <Font size="24.0" />
+                                                   </font>
+                                                </Label>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" top="5.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="TOP_CENTER">
+                           <children>
+                              <Text fx:id="desc" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="JUSTIFY" wrappingWidth="600.0" VBox.vgrow="ALWAYS">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="3.0" />
+                                 </VBox.margin>
+                              </Text>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="20.0" />
+                           </VBox.margin>
+                        </HBox>
+                                          <HBox spacing="7.0" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <Label fx:id="avg_l" layoutX="10.0" layoutY="61.0" text="Average rank:">
+                                                   <font>
+                                                      <Font size="24.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="rank_avg" text="rank">
+                                                   <font>
+                                                      <Font size="24.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" spacing="7.0" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <Label fx:id="my_l" text="My rank:">
+                                                   <font>
+                                                      <Font size="24.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="rank_my" layoutX="10.0" layoutY="10.0" text="myrank">
+                                                   <font>
+                                                      <Font size="24.0" />
+                                                   </font>
+                                                </Label>
+                                                <Region prefHeight="20.0" prefWidth="50.0" />
+                                                <Slider fx:id="rank" blockIncrement="1.0" majorTickUnit="1.0" max="10.0" minWidth="250.0" minorTickCount="1" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" HBox.hgrow="ALWAYS" />
+                                                <Region prefHeight="50.0" prefWidth="5.0" />
+                                                <Button fx:id="rank_b" mnemonicParsing="false" onAction="#rankGame" text="Rank" />
+                                             </children>
+                                             <padding>
+                                                <Insets right="10.0" />
+                                             </padding>
+                                          </HBox>
+                                          <HBox alignment="TOP_CENTER" spacing="20.0" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <Button fx:id="addrev_b" mnemonicParsing="false" onAction="#addReview" text="Add a review" />
+                                                <Button fx:id="addart_b" mnemonicParsing="false" onAction="#addArticle" text="Add an article" />
+                                                <Button fx:id="upload_b" mnemonicParsing="false" onAction="#uploadScreenshots" text="Upload screenshot..." />
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" top="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <HBox alignment="TOP_CENTER">
+                                             <children>
+                                                <Label fx:id="comments_l" text="Comments">
+                                                   <font>
+                                                      <Font size="24.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets top="30.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                        <HBox alignment="CENTER" spacing="10.0">
+                           <children>
+                              <TextArea fx:id="comment" prefHeight="50.0" prefWidth="400.0" promptText="Type your comment here..." />
+                              <Button fx:id="post_b" mnemonicParsing="false" onAction="#postComment" text="Post comment" />
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="10.0" top="10.0" />
+                           </VBox.margin>
+                        </HBox>
+                                          <HBox fx:id="u1" alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0">
+                                             <children>
+                                                <ImageView fx:id="u1_photo" fitHeight="75.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                                   <HBox.margin>
+                                                      <Insets right="5.0" />
+                                                   </HBox.margin>
+                                                </ImageView>
+                                                <VBox>
+                                                   <children>
+                                                      <Label fx:id="usrname1" text="Username" BorderPane.alignment="CENTER">
+                                                         <font>
+                                                            <Font name="System Bold" size="16.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="posted_on1" text="Posted on:" />
+                                    <Text fx:id="t1" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets left="10.0" right="10.0" />
+                                                   </VBox.margin>
+                                                </VBox>
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" right="5.0" />
+                                             </padding>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="590.0">
+                                             <children>
+                                                <ImageView fx:id="u2_photo" fitHeight="75.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                                   <HBox.margin>
+                                                      <Insets right="5.0" />
+                                                   </HBox.margin>
+                                                </ImageView>
+                                                <VBox>
+                                                   <children>
+                                                      <Label fx:id="usrname2" text="Username" BorderPane.alignment="CENTER">
+                                                         <font>
+                                                            <Font name="System Bold" size="16.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="posted_on2" text="Posted on:" />
+                                    <Text fx:id="t2" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets left="10.0" right="10.0" />
+                                                   </VBox.margin>
+                                                </VBox>
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" right="5.0" />
+                                             </padding>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="692.0">
+                                             <children>
+                                                <ImageView fx:id="u3_photo" fitHeight="75.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                                   <HBox.margin>
+                                                      <Insets right="5.0" />
+                                                   </HBox.margin>
+                                                </ImageView>
+                                                <VBox>
+                                                   <children>
+                                                      <Label fx:id="usrname3" text="Username" BorderPane.alignment="CENTER">
+                                                         <font>
+                                                            <Font name="System Bold" size="16.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="posted_on3" text="Posted on:" />
+                                    <Text fx:id="t3" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets left="10.0" right="10.0" />
+                                                   </VBox.margin>
+                                                </VBox>
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" right="5.0" />
+                                             </padding>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="794.0">
+                                             <children>
+                                                <ImageView fx:id="u4_photo" fitHeight="75.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                                   <HBox.margin>
+                                                      <Insets right="5.0" />
+                                                   </HBox.margin>
+                                                </ImageView>
+                                                <VBox>
+                                                   <children>
+                                                      <Label fx:id="usrname4" text="Username" BorderPane.alignment="CENTER">
+                                                         <font>
+                                                            <Font name="System Bold" size="16.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="posted_on4" text="Posted on:" />
+                                    <Text fx:id="t4" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets left="10.0" right="10.0" />
+                                                   </VBox.margin>
+                                                </VBox>
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" right="5.0" />
+                                             </padding>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="896.0">
+                                             <children>
+                                                <ImageView fx:id="u5_photo" fitHeight="75.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                                   <HBox.margin>
+                                                      <Insets right="5.0" />
+                                                   </HBox.margin>
+                                                </ImageView>
+                                                <VBox>
+                                                   <children>
+                                                      <Label fx:id="usrname5" text="Username" BorderPane.alignment="CENTER">
+                                                         <font>
+                                                            <Font name="System Bold" size="16.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="posted_on5" text="Posted on:" />
+                                    <Text fx:id="t5" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets left="10.0" right="10.0" />
+                                                   </VBox.margin>
+                                                </VBox>
+                                             </children>
+                                             <padding>
+                                                <Insets right="5.0" />
+                                             </padding>
+                                          </HBox>
+                                          <HBox VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <Button mnemonicParsing="false" onAction="#prevPage" text="&lt;&lt;" />
+                                                <Region HBox.hgrow="ALWAYS" />
+                                                <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#nextPage" text="&gt;&gt;" />
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" left="100.0" right="100.0" top="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                       </children>
+                                       <BorderPane.margin>
+                                          <Insets left="10.0" />
+                                       </BorderPane.margin>
+                                    </VBox>
+                                 </bottom>
+                              </BorderPane>
+                           </content>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+                        </ScrollPane>
+                     </center>
+                  </BorderPane>

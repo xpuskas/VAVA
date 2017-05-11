@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" spacing="18.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
+   <children>
+      <HBox alignment="TOP_CENTER" spacing="6.0">
+         <children>
+            <Label fx:id="username" text="Username:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="usrname" promptText="Enter your username..." />
+         </children>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox alignment="TOP_CENTER" spacing="10.0">
+         <children>
+            <Label fx:id="password" layoutX="10.0" layoutY="10.0" text="Password:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <PasswordField fx:id="pass" promptText="Enter your password..." />
+         </children>
+      </HBox>
+      <Button fx:id="sign_in" mnemonicParsing="false" onAction="#signIN" text="Sign in" />
+      <Label fx:id="new_account_encourage" text="Don't have an account yet? Create one now!">
+         <font>
+            <Font size="24.0" />
+         </font>
+         <VBox.margin>
+            <Insets top="30.0" />
+         </VBox.margin>
+      </Label>
+      <HBox alignment="TOP_CENTER">
+         <children>
+            <HBox layoutX="20.0" layoutY="20.0" spacing="8.0">
+               <children>
+                  <Label fx:id="new_username" text="Your username:">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="usr_reg" promptText="Choose your username..." />
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+      <HBox alignment="TOP_CENTER" layoutX="20.0" layoutY="60.0" spacing="10.0">
+         <children>
+            <Label fx:id="new_password" layoutX="10.0" layoutY="10.0" text="Your password:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <PasswordField fx:id="pass_reg" promptText="Choose your password..." />
+         </children>
+      </HBox>
+      <HBox alignment="TOP_CENTER" layoutX="20.0" layoutY="260.0" spacing="10.0">
+         <children>
+            <Label layoutX="10.0" layoutY="10.0" text="Your password:" visible="false">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <PasswordField fx:id="pass_reg_2" promptText="Retype your password..." />
+         </children>
+      </HBox>
+      <HBox alignment="TOP_CENTER" spacing="10.0">
+         <children>
+            <Label fx:id="birth_day" text="When were you born?">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <DatePicker fx:id="birth" prefHeight="25.0" prefWidth="189.0" promptText="Pick a date..." />
+         </children>
+      </HBox>
+      <Button fx:id="upload_profile_pic" mnemonicParsing="false" onAction="#uploadProfilePicture" text="Upload profile picture...">
+         <VBox.margin>
+            <Insets bottom="5.0" left="100.0" />
+         </VBox.margin>
+      </Button>
+      <HBox alignment="CENTER_LEFT" spacing="187.0">
+         <children>
+            <ComboBox fx:id="language" prefHeight="25.0" prefWidth="103.0" promptText="language" />
+            <Button fx:id="register" mnemonicParsing="false" onAction="#registerUser" text="Register!" />
+         </children>
+         <padding>
+            <Insets left="10.0" />
+         </padding>
+      </HBox>
+   </children>
+</VBox>
