@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AddReviewController">
+                     <padding>
+                        <Insets left="10.0" right="5.0" top="10.0" />
+                     </padding>
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                           <children>
+                              <Label fx:id="title_l" text="Title:">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets right="9.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="title" prefHeight="25.0" prefWidth="334.0" promptText="Type title of your review here..." />
+                           </children>
+                        </HBox>
+                        <HBox spacing="10.0">
+                           <children>
+                              <Label fx:id="rank_l" text="Rank:">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                              <Slider fx:id="slider" blockIncrement="1.0" majorTickUnit="1.0" max="10.0" minWidth="250.0" minorTickCount="1" prefHeight="38.0" prefWidth="336.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" HBox.hgrow="NEVER" />
+                           </children>
+                           <VBox.margin>
+                              <Insets right="400.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="15.0" spacing="10.0">
+                           <children>
+                              <Label fx:id="pros_l" text="Pros:">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets right="9.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Region prefHeight="25.0" prefWidth="113.0" HBox.hgrow="ALWAYS" />
+                              <Label fx:id="cons_l" layoutX="10.0" layoutY="10.0" text="Cons:">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets right="250.0" />
+                           </padding>
+                        </HBox>
+                        <HBox>
+                           <children>
+                              <TextField fx:id="pro1" prefHeight="25.0" prefWidth="250.0" />
+                              <Region prefHeight="25.0" prefWidth="113.0" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="con1" layoutX="10.0" layoutY="10.0" prefWidth="250.0" />
+                           </children>
+                           <padding>
+                              <Insets right="57.0" />
+                           </padding>
+                        </HBox>
+                        <HBox layoutX="20.0" layoutY="153.0">
+                           <children>
+                              <TextField fx:id="pro2" prefHeight="25.0" prefWidth="250.0" />
+                              <Region prefHeight="25.0" prefWidth="113.0" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="con2" layoutX="10.0" layoutY="10.0" prefWidth="250.0" />
+                           </children>
+                           <padding>
+                              <Insets right="57.0" />
+                           </padding>
+                        </HBox>
+                        <HBox layoutX="20.0" layoutY="188.0">
+                           <children>
+                              <TextField fx:id="pro3" prefHeight="25.0" prefWidth="250.0" />
+                              <Region prefHeight="25.0" prefWidth="113.0" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="con3" layoutX="10.0" layoutY="10.0" prefWidth="250.0" />
+                           </children>
+                           <padding>
+                              <Insets right="57.0" />
+                           </padding>
+                        </HBox>
+                        <HBox layoutX="20.0" layoutY="223.0">
+                           <children>
+                              <TextField fx:id="pro4" prefHeight="25.0" prefWidth="250.0" />
+                              <Region prefHeight="25.0" prefWidth="113.0" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="con4" layoutX="10.0" layoutY="10.0" prefWidth="250.0" />
+                           </children>
+                           <padding>
+                              <Insets right="57.0" />
+                           </padding>
+                        </HBox>
+                        <TextArea fx:id="text" prefHeight="236.0" prefWidth="809.0" promptText="Type your text here..." wrapText="true" VBox.vgrow="ALWAYS">
+                           <VBox.margin>
+                              <Insets right="5.0" />
+                           </VBox.margin>
+                        </TextArea>
+                        <Button fx:id="upload_l" mnemonicParsing="false" onAction="#uploadImage" text="Upload cover photo" />
+                        <HBox alignment="CENTER">
+                           <children>
+                              <Button fx:id="submit_b" mnemonicParsing="false" onAction="#addReview" text="SUBMIT">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </HBox>
+                     </children>
+                  </VBox>

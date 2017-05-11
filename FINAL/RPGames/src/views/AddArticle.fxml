@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AddArticleController">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                           <children>
+                              <Label fx:id="title_l" text="Title:">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets right="9.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="title" prefHeight="25.0" prefWidth="334.0" promptText="Type title of your article..." />
+                           </children>
+                        </HBox>
+                        <TextArea fx:id="text" prefHeight="236.0" prefWidth="809.0" promptText="Type your text here..." wrapText="true" VBox.vgrow="ALWAYS">
+                           <padding>
+                              <Insets right="5.0" />
+                           </padding>
+                        </TextArea>
+                        <Button fx:id="upload_b" mnemonicParsing="false" onAction="#uploadCover" text="Upload cover photo" />
+                        <HBox alignment="CENTER">
+                           <children>
+                              <Button fx:id="submit_b" mnemonicParsing="false" onAction="#addArticle" text="SUBMIT">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <padding>
+                              <Insets bottom="10.0" />
+                           </padding>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets left="10.0" right="5.0" top="10.0" />
+                     </padding>
+                  </VBox>
