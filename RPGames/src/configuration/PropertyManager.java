@@ -12,7 +12,10 @@ public class PropertyManager {
 
 	private static Properties props = null;
 	private static final Logger LOGGER = LogManager.createLogger(PropertyManager.class.getName());
-	
+	/**
+	 * Loads properties of the project from predefined properties file.
+	 * @return loaded properties of the project
+	 */
 	public static Properties getProps() {
 		if(props == null) {
 			props = new Properties();
@@ -22,8 +25,15 @@ public class PropertyManager {
 			try {
 				fis = new FileInputStream("config.properties");
 			} 
-			catch (FileNotFoundException e) {
+			catch (FileNotFoundException | IllegalArgumentException e) {
 				LogManager.logException(LOGGER, e, true);
+			}
+			finally {
+				try {
+					fis.close();
+				} catch (IOException e) {
+					LogManager.logException(LOGGER, e, true);
+				}
 			}
 			try {
 				props.load(fis);

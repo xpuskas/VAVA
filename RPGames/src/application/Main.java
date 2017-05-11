@@ -3,6 +3,8 @@ package application;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import javax.naming.NamingException;
+
 import controllers.AddArticleController;
 import controllers.AddReviewController;
 import controllers.Controller;
@@ -31,8 +33,6 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage){
 		
-	LogManager.giveLogHandlerToLogger(LOGGER);
-		
 	FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
 	Parent root = null;
 	
@@ -56,7 +56,12 @@ public class Main extends Application {
 	}
 	
 	
-	public void launchMainApp(){
+	/**
+	 * Displaying of the main stage after a successful login.
+	 * @return
+	 * @throws IOException
+	 */
+	public void launchMainApp() throws IOException {
     	FXMLLoader loader = new FXMLLoader();
     	loader.setLocation(getClass().getResource("/views/Home.fxml"));
     	Pane pane = null;
@@ -65,6 +70,7 @@ public class Main extends Application {
 			pane = (Pane) loader.load();
 		} catch (IOException e) {
 			LogManager.logException(LOGGER, e, true);
+			throw e;
 		}
 		
     	Stage dialog = new Stage();
@@ -80,10 +86,18 @@ public class Main extends Application {
     	
     	LanguageManager.initialize(); 	
     	
-    	/*
-    	 * @Author Stack overflow
-    	 * @Link http://stackoverflow.com/questions/14897194/stop-threads-before-close-my-javafx-program
-    	 */
+    	bindEventHandlerToDialog(dialog);
+	}
+	/**
+	 * Binds event handler to the main stage. Upon closing the application,
+	 * there might occur occasional memory leaks, that´s why it is important to use
+	 * system call.
+	 * 
+	 * @param dialog - the main stage
+	 * @Author Stack overflow
+	 * @Link http://stackoverflow.com/questions/14897194/stop-threads-before-close-my-javafx-program
+	 */
+	private void bindEventHandlerToDialog(Stage dialog) {
         dialog.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent e) {
@@ -93,7 +107,11 @@ public class Main extends Application {
          });
 	}
 	
-	
+	/**
+	 * Displays the dialog for adding a new {@link model.Review}.
+	 * @param game - the game which is the topic of the review
+	 * @return
+	 */
 	public void showAddReviewDialog(Game game){
     	FXMLLoader loader = new FXMLLoader();
     	loader.setLocation(getClass().getResource("/views/AddReview.fxml"));
@@ -120,7 +138,11 @@ public class Main extends Application {
  
 	}
 	
-	
+	/**
+	 * Displays the dialog for adding a new article
+	 * @param game - the game which is the topic of the article
+	 * @return
+	 */
 	public void showAddArticleDialog(Game game) {
     	FXMLLoader loader = new FXMLLoader();
     	loader.setLocation(getClass().getResource("/views/AddArticle.fxml"));
@@ -146,10 +168,20 @@ public class Main extends Application {
     	
 	}
 
+	/**
+	 * Returns the name of currently logged in user. Referenced by most controllers.
+	 * @return name of the user who is currently logged in
+	 */
 	public static String getUserName() {
 		return userName;
 	}
-
+	/**
+	 * Stores the name of the user who is currently logged in.
+	 * Must be called upon logging in, as this is to be referenced by
+	 * any controller that needs to retrieve the user.
+	 * @param userName - name of the user who is being logged in
+	 * @return
+	 */
 	public static void setUserName(String userName) {
 		Main.userName = userName;
 	}

@@ -8,10 +8,10 @@ import javax.naming.NamingException;
 
 public class EJBContext {
 	/**
-	 * Vytvorenie kontextu pre spojenie sa s JBoss aplikacnym serverom
+	 * Creation of context for contacting JBoss application server
 	 * @param host
 	 * @param port
-	 * @return
+	 * @return initial context
 	 * @throws NamingException
 	 */
 	public static Context createRemoteEjbContext(String host, String port) throws NamingException {

@@ -15,7 +15,11 @@ import logging.LogManager;
 public class Utility {
 	
 	private static final Logger LOGGER = LogManager.createLogger( Utility.class.getName() );
-	
+	/**
+	 * Converts byte[] array to {@link javafx.scene.image.Image}
+	 * @param bytes - a primitive byte[] array which represents the image
+	 * @return {@link javafx.scene.image.Image}
+	 */
 	public static Image byte2Image(byte[] bytes) {
 		
 		BufferedImage bim = null;
@@ -26,11 +30,13 @@ public class Utility {
 		} catch (IOException e) {
 			LogManager.logException(LOGGER, e, true);
 		}
-		
-        try {
-			in.close();
-		} catch (IOException e) {
-			LogManager.logException(LOGGER, e, true);
+		finally {
+			try {
+				in.close();
+			}
+			catch (IOException | NullPointerException e) {
+				LogManager.logException(LOGGER, e, true);
+			}
 		}
 		
         Image coverim = SwingFXUtils.toFXImage(bim, null);
